@@ -184,6 +184,25 @@ void lectureGradeCalculator()
 
 
 
+void menu()
+{
+    //Explaining the commands
+    //doing a loop between choices until the user chooses to stop
+    //Using switches inside a loop to perform user's choices
+    //1-log in
+    //2-register or create an account
+    //3-Add a lecture to the current semester or
+    //4-calculate the lecture's semester grade and add it to the lecture(if the user doesnt know it)
+    //5-calculate the user's current GPA and store it
+    //6-calcutate the user's current CGPA and store it
+    //7-Delete a lecture
+    //8-Delete an account
+    //9-log out
+
+
+
+
+}
 
 
 
@@ -233,3 +252,4 @@ int main()
 
     return 0;
 }
+
