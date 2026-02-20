@@ -14,7 +14,7 @@ void taskDelimeter()
 
 
 void welcome()
-{   
+{
     std::cout << "\t*Welcome to the GPA calculator*" << std::endl;
     std::cout << "\t*You can either compute your GPA or you CGPA*" << std::endl;
     taskDelimeter();
@@ -41,7 +41,7 @@ double takeNumber()
             std::cin.clear();           // Clear the error flags
             std::cin.ignore(10000, '\n'); // Discard invalid input
         }
-        
+
 
     }
 
@@ -51,9 +51,9 @@ double takeNumber()
 
 
 std::string takeString()
-{   
-    std::string text  {""};
-    
+{
+    std::string text{ "" };
+
     std::cout << "\nLetters and spaces only): " << std::endl;
 
     std::cin.clear();           // Clear the error flags
@@ -62,10 +62,10 @@ std::string takeString()
     while (true)
 
     {
-        
+
 
         std::getline(std::cin, text);
-    
+
         bool valid = !text.empty();
 
         for (char c : text) {
@@ -93,9 +93,9 @@ std::string takeString()
 
 
 
-void lectureAdder( double grade, std::string name, double weight )
+void lectureAdder(double grade, std::string name, double weight)
 {
-    std::cout <<"\nEnter the lecture's name : ";
+    std::cout << "\nEnter the lecture's name : ";
 
     name = takeString();
 
@@ -177,11 +177,27 @@ void lectureGradeCalculator()
 
 
 
+void printCommands()
+{
+    taskDelimeter();
+    std::cout << "\t1- Add a lecture to the current semester\n";
+    std::cout << "\t2- Compute a lecture's semester grade (And add it to the lecture)\n";
+    std::cout << "\t3- Calculate the current GPA\n";
+    std::cout << "\t4- Calculate the current CGPA\n";
+    std::cout << "\t5- Delete a lecture\n";
+    std::cout << "\t6- Delete an account\n";
+    std::cout << "\t7- Log in\n";
+    std::cout << "\t8- Register\n";
+    std::cout << "\t3- Log out\n";
+    taskDelimeter();
 
+}
 
+void choose() 
 
-
-
+{
+std::cout << "\tYou choosed\n";
+}
 
 
 void menu()
@@ -199,10 +215,14 @@ void menu()
     //8-Delete an account
     //9-log out
 
-
-
-
 }
+
+
+
+
+
+
+
 
 
 
@@ -246,10 +266,7 @@ void menu()
 
 int main()
 {
-    welcome();
-    takeNumber();
-    takeString();
+    printCommands();
 
     return 0;
 }
-
