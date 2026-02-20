@@ -1,0 +1,12 @@
+﻿  Calculs.cpp
+  Input.cpp
+C:\Users\Rostel\source\repos\Grades manager\Input.cpp(51,36): warning C4365: 'initializing': conversion from '_Elem' to 'unsigned char', signed/unsigned mismatch
+C:\Users\Rostel\source\repos\Grades manager\Input.cpp(51,36): warning C4365:         with
+C:\Users\Rostel\source\repos\Grades manager\Input.cpp(51,36): warning C4365:         [
+C:\Users\Rostel\source\repos\Grades manager\Input.cpp(51,36): warning C4365:             _Elem=char
+C:\Users\Rostel\source\repos\Grades manager\Input.cpp(51,36): warning C4365:         ]
+  main.cpp
+  Menu.cpp
+  UI.cpp
+  Generating Code...
+  HelloWorld.vcxproj -> C:\Users\Rostel\source\repos\Grades manager\x64\Debug\STD_GPA.exe
