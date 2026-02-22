@@ -136,12 +136,14 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="src\sqlite3.c" />
     <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calculs.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="src\sqlite3.h" />
     <ClInclude Include="UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
