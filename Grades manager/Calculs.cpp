@@ -31,7 +31,7 @@ void lectureAdder(double& grade, std::string& name, double& weight) {
 
 
 
-void lectureGradeCalculator() {
+double lectureGradeCalculator() {
     std::cout << "\n\tGrade average calculator\n";
     taskDelimeter();
 
@@ -83,4 +83,6 @@ void lectureGradeCalculator() {
     std::cout << "\nThe total grade is: " << totalgrade << "\n";
     std::cout << "\nThe operation is complete\n";
     taskDelimeter();
+
+    return totalgrade;
 }
