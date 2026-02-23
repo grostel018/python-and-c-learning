@@ -2,6 +2,7 @@
 #include "UI.h"
 #include "Menu.h"
 #include "sqlite3.h"
+#include "models.h"
 
 int main() {
 

@@ -143,6 +143,7 @@
     <ClInclude Include="Calculs.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="Models.h" />
     <ClInclude Include="src\sqlite3.h" />
     <ClInclude Include="UI.h" />
   </ItemGroup>
