@@ -16,6 +16,8 @@ int main() {
 
     sqlite3_close(db);
 
+	taskDelimeter();
+
     welcome();
     printCommands();
     menu();
