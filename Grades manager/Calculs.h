@@ -1,5 +1,5 @@
 #pragma once
 #include <string>
 
-void lectureAdder(double& grade, std::string& name, double& weight);
-double lectureGradeCalculator();
+void courseAdder(double& grade, std::string& name, double& weight);
+double courseGradeCalculator();

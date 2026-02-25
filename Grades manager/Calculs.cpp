@@ -6,7 +6,7 @@
 
 
 
-void lectureAdder(double& grade, std::string& name, double& weight) {
+void courseAdder(double& grade, std::string& name, double& weight) {
     std::cout << "\nEnter the lecture's name : ";
 
     name = takeString();
@@ -31,7 +31,7 @@ void lectureAdder(double& grade, std::string& name, double& weight) {
 
 
 
-double lectureGradeCalculator() {
+double courseGradeCalculator() {
     std::cout << "\n\tGrade average calculator\n";
     taskDelimeter();
 

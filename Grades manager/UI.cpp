@@ -15,7 +15,7 @@ void welcome()
 void printCommands()
 {
     taskDelimeter();
-    std::cout << "\t1- Add a lecture to the current semester\n";
+    std::cout << "\t1- Add a course to the current semester\n";
     std::cout << "\t2- Compute a lecture's semester grade (And add it to the lecture)\n";
     std::cout << "\t3- Calculate the current GPA\n";
     std::cout << "\t4- Calculate the current CGPA\n";
