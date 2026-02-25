@@ -15,15 +15,15 @@ void welcome()
 void printCommands()
 {
     taskDelimeter();
-    std::cout << "\t1- Add a course to the current semester\n";
-    std::cout << "\t2- Compute a lecture's semester grade (And add it to the lecture)\n";
-    std::cout << "\t3- Calculate the current GPA\n";
-    std::cout << "\t4- Calculate the current CGPA\n";
-    std::cout << "\t5- Delete a lecture\n";
-    std::cout << "\t6- Delete an account\n";
-    std::cout << "\t7- Log in\n";
-    std::cout << "\t8- Register\n";
-    std::cout << "\t3- Log out\n";
+    std::cout << "\t1- Log in\n";
+    std::cout << "\t2- Register\n";
+    std::cout << "\t3- Add a course to the current semester\n";
+    std::cout << "\t4- Compute a course's semester grade (And add it to the course)\n";
+    std::cout << "\t5- Calculate the current GPA\n";
+    std::cout << "\t6- Calculate the current CGPA\n";
+    std::cout << "\t7- Delete a course\n";
+    std::cout << "\t8- Delete an account\n";
+    std::cout << "\t9- Log out\n";
     taskDelimeter();
 
 }

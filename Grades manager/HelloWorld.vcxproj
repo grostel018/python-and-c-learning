@@ -133,6 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Calculs.cpp" />
+    <ClCompile Include="database.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -141,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calculs.h" />
+    <ClInclude Include="database.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Models.h" />

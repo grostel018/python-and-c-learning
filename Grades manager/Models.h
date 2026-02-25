@@ -1,28 +1,36 @@
+
+
+// ─────────────────────────────────────────
+//  Structs
+// ─────────────────────────────────────────
 #pragma once
 #include <string>
 #include <vector>
 
 struct GradeComponent {
-    std::string label;   // "Midterm", "Final", "Quiz", "project"
-    float       grade;   // 0 – 100
-    float       weight;  // 0 – 100  (all weights in a course must sum ≤ 100)
+    int         id;        // DB primary key later
+    int         courseId;  // foreign key → Course
+    std::string label;     // "Midterm", "Final", "Quiz"
+    double      grade;     // 0 – 100
+    double      weight;    // 0 – 100
 };
 
 struct Course {
-    int                        id;          // will map to DB primary key later
-    std::string                courseName;        // "Calculus II"
-    std::string                code;        // "MATH 201"
-    int                        credits;     // 3
-    std::vector<GradeComponent> components; // the grade breakdown
-    float                      finalGrade;  // computed, not stored raw
+    int                         id;           // DB primary key later
+    int                         studentId;    // foreign key → Student
+    std::string                 name;         // "Calculus II"
+    int                         credits;      // 3
+    int                         semester;     // 1, 2, 3 ...
+    double                      finalGrade;   // computed
+    std::vector<GradeComponent> components;
 };
 
 struct Student {
-    int                  id;        // DB primary key later
-    std::string          stdName;
-    std::string          major;
-    int                  year;      // 1 = Freshman … 4 = Senior
+    int                  id;       // DB primary key later
+    std::string username;          // unique, used for login → "john99"
+    std::string          name;
+    std::string          password; // will hash later
     std::vector<Course>  courses;
-    float                gpa;       // computed field
+    double               gpa;      // current semester, computed
+    double               cgpa;     // cumulative, computed
 };
-
