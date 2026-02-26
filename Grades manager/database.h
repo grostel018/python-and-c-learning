@@ -9,7 +9,9 @@
 #include <vector>
 
 // Setup
+sqlite3* openAndInitDatabase(const std::string& filename);
 void    initDatabase(sqlite3* db);
+
 
 
 

@@ -22,6 +22,23 @@ static void logError(const std::string& context, sqlite3* db) {
     std::cerr << "[DB ERROR] " << context << ": " << sqlite3_errmsg(db) << "\n";
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ── setup ────────────────────────────────
 
 /**
@@ -72,6 +89,35 @@ void initDatabase(sqlite3* db) {
         sqlite3_free(err);
     }
 }
+
+
+sqlite3* openAndInitDatabase(const std::string& filename)
+{
+    sqlite3* db = nullptr;
+
+    int rc = sqlite3_open(filename.c_str(), &db);
+    if (rc != SQLITE_OK)
+    {
+        std::cerr << "Cannot open database: "
+            << sqlite3_errmsg(db) << "\n";
+
+        sqlite3_close(db);
+        return nullptr;
+    }
+
+    initDatabase(db);
+
+    std::cout << "Database initialized successfully.\n";
+    return db;
+}
+
+
+
+
+
+
+
+
 
 // ── students ─────────────────────────────
 
