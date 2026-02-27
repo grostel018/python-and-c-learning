@@ -187,6 +187,49 @@ Student getStudent(sqlite3* db, int id) {
     return student;
 }
 
+
+// Returns a Student with id==0 if not found (or use std::optional if you want)
+Student getStudentByUsername(sqlite3* db, const std::string& username) {
+    Student student{};
+    const char* sql =
+        "SELECT id, name, username, password "
+        "FROM students "
+        "WHERE username = ?;";
+
+    sqlite3_stmt* stmt = nullptr;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        logError("getStudentByUsername prepare", db);
+        return student;
+    }
+
+    sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_TRANSIENT);
+
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        student.id = sqlite3_column_int(stmt, 0);
+        student.name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        student.username = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        student.password = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+    }
+
+    sqlite3_finalize(stmt);
+    return student;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * @brief Delete a student by id.
  *

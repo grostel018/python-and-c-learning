@@ -18,6 +18,7 @@ void    initDatabase(sqlite3* db);
 // Students
 int     insertStudent(sqlite3* db, Student& student);          // returns new id
 Student getStudent(sqlite3* db, int id);
+Student getStudentByUsername(sqlite3* db, const std::string& username);
 bool    deleteStudent(sqlite3* db, int id);
 bool    studentExists(sqlite3* db, const std::string& username);
 
