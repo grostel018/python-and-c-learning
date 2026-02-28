@@ -59,29 +59,39 @@ void initDatabase(sqlite3* db) {
     sqlite3_exec(db, "PRAGMA foreign_keys = ON;", nullptr, nullptr, nullptr);
 
     const char* sql =
+        "PRAGMA foreign_keys = ON;"
+
         "CREATE TABLE IF NOT EXISTS students ("
         "  id       INTEGER PRIMARY KEY AUTOINCREMENT,"
         "  name     TEXT    NOT NULL,"
-        "  username    TEXT    NOT NULL UNIQUE,"
+        "  username TEXT    NOT NULL UNIQUE,"
         "  password TEXT    NOT NULL"
         ");"
+
         "CREATE TABLE IF NOT EXISTS courses ("
         "  id          INTEGER PRIMARY KEY AUTOINCREMENT,"
         "  student_id  INTEGER NOT NULL,"
         "  name        TEXT    NOT NULL,"
-        "  credits     INTEGER NOT NULL,"
-        "  semester    INTEGER NOT NULL,"
-        "  final_grade REAL    DEFAULT 0,"
-        "  FOREIGN KEY (student_id) REFERENCES students(id)"
+        "  credits     INTEGER NOT NULL CHECK (credits > 0),"
+        "  semester    INTEGER NOT NULL CHECK (semester > 0),"
+        "  final_grade REAL,"
+        "  FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE"
         ");"
+
         "CREATE TABLE IF NOT EXISTS grade_components ("
         "  id        INTEGER PRIMARY KEY AUTOINCREMENT,"
         "  course_id INTEGER NOT NULL,"
         "  label     TEXT    NOT NULL,"
-        "  grade     REAL    NOT NULL,"
-        "  weight    REAL    NOT NULL,"
-        "  FOREIGN KEY (course_id) REFERENCES courses(id)"
-        ");";
+        "  grade     REAL    NOT NULL CHECK (grade >= 0 AND grade <= 100),"
+        "  weight    REAL    NOT NULL CHECK (weight >= 0 AND weight <= 100),"
+        "  FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE"
+        ");"
+
+        "CREATE INDEX IF NOT EXISTS idx_courses_student_semester "
+        "ON courses(student_id, semester);"
+
+        "CREATE INDEX IF NOT EXISTS idx_components_course "
+        "ON grade_components(course_id);";
 
     char* err = nullptr;
     if (sqlite3_exec(db, sql, nullptr, nullptr, &err) != SQLITE_OK) {
@@ -104,7 +114,7 @@ sqlite3* openAndInitDatabase(const std::string& filename)
         sqlite3_close(db);
         return nullptr;
     }
-
+    sqlite3_extended_result_codes(db, 1);
     initDatabase(db);
 
     std::cout << "Database initialized successfully.\n";
@@ -133,25 +143,52 @@ sqlite3* openAndInitDatabase(const std::string& filename)
  *                on success.
  * @return The new student's id on success, or -1 on failure.
  */
-int insertStudent(sqlite3* db, Student& student) {
-    const char* sql = "INSERT INTO students (name, username, password) VALUES (?, ?, ?);";
-    sqlite3_stmt* stmt;
-
-    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        logError("insertStudent prepare", db); return -1;
+int insertStudent(sqlite3* db, Student& student)
+{
+    if (!db) {
+        std::cerr << "[DB ERROR] insertStudent: db is null\n";
+        return -1;
     }
 
-    sqlite3_bind_text(stmt, 1, student.name.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(stmt, 2, student.username.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(stmt, 3, student.password.c_str(), -1, SQLITE_STATIC);
+    const char* sql =
+        "INSERT INTO students (name, username, password) "
+        "VALUES (?, ?, ?);";
 
-    if (sqlite3_step(stmt) != SQLITE_DONE) {
-        logError("insertStudent step", db);
-        sqlite3_finalize(stmt); return -1;
+    sqlite3_stmt* stmt = nullptr;
+
+    int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        logError("insertStudent prepare", db);
+        return -1;
     }
 
-    student.id = (int)sqlite3_last_insert_rowid(db);
+    rc = sqlite3_bind_text(stmt, 1, student.name.c_str(), -1, SQLITE_TRANSIENT);
+    if (rc != SQLITE_OK) { logError("insertStudent bind name", db); sqlite3_finalize(stmt); return -1; }
+
+    rc = sqlite3_bind_text(stmt, 2, student.username.c_str(), -1, SQLITE_TRANSIENT);
+    if (rc != SQLITE_OK) { logError("insertStudent bind username", db); sqlite3_finalize(stmt); return -1; }
+
+    rc = sqlite3_bind_text(stmt, 3, student.password.c_str(), -1, SQLITE_TRANSIENT);
+    if (rc != SQLITE_OK) { logError("insertStudent bind password", db); sqlite3_finalize(stmt); return -1; }
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE)
+    {
+        int extended = sqlite3_extended_errcode(db);
+
+        if (extended == SQLITE_CONSTRAINT_UNIQUE || rc == SQLITE_CONSTRAINT) {
+            std::cerr << "Username already exists.\n";
+        }
+        else {
+            logError("insertStudent step", db);
+        }
+
+        sqlite3_finalize(stmt);
+        return -1;
+    }
+
     sqlite3_finalize(stmt);
+    student.id = static_cast<int>(sqlite3_last_insert_rowid(db));
     return student.id;
 }
 
@@ -189,30 +226,83 @@ Student getStudent(sqlite3* db, int id) {
 
 
 // Returns a Student with id==0 if not found (or use std::optional if you want)
-Student getStudentByUsername(sqlite3* db, const std::string& username) {
+Student getStudentByUsername(sqlite3* db, const std::string& username)
+{
     Student student{};
-    const char* sql =
-        "SELECT id, name, username, password "
-        "FROM students "
-        "WHERE username = ?;";
+    student.id = 0; // 0 = not found (default)
 
-    sqlite3_stmt* stmt = nullptr;
-
-    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        logError("getStudentByUsername prepare", db);
+    // Defensive checks
+    if (!db) {
+        // Can't call sqlite3_errmsg safely if db is nullptr
+        std::cerr << "[DB ERROR] getStudentByUsername: db is null\n";
+        student.id = -1; // -1 = db error
         return student;
     }
 
-    sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_TRANSIENT);
-
-    if (sqlite3_step(stmt) == SQLITE_ROW) {
-        student.id = sqlite3_column_int(stmt, 0);
-        student.name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-        student.username = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-        student.password = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+    if (username.empty()) {
+        // Treat empty username as "not found" (or you could treat as error)
+        return student;
     }
 
-    sqlite3_finalize(stmt);
+    // Optional: guard against absurdly long inputs (helps avoid weird edge cases)
+    if (username.size() > 64) {
+        std::cerr << "[INPUT ERROR] Username too long\n";
+        student.id = -1;
+        return student;
+    }
+
+    const char* sql =
+        "SELECT id, name, username, password "
+        "FROM students "
+        "WHERE username = ? "
+        "LIMIT 1;";
+
+    sqlite3_stmt* stmt = nullptr;
+
+    int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        logError("getStudentByUsername prepare", db);
+        student.id = -1;
+        return student; // stmt is nullptr here, so no finalize needed
+    }
+
+    // Make sure stmt always gets finalized (single-exit pattern)
+    auto finalize = [&]() {
+        if (stmt) sqlite3_finalize(stmt);
+        stmt = nullptr;
+        };
+
+    rc = sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_TRANSIENT);
+    if (rc != SQLITE_OK) {
+        logError("getStudentByUsername bind", db);
+        student.id = -1;
+        finalize();
+        return student;
+    }
+
+    rc = sqlite3_step(stmt);
+
+    if (rc == SQLITE_ROW) {
+        student.id = sqlite3_column_int(stmt, 0);
+
+        const unsigned char* nameText = sqlite3_column_text(stmt, 1);
+        const unsigned char* userText = sqlite3_column_text(stmt, 2);
+        const unsigned char* passText = sqlite3_column_text(stmt, 3);
+
+        student.name = nameText ? reinterpret_cast<const char*>(nameText) : "";
+        student.username = userText ? reinterpret_cast<const char*>(userText) : "";
+        student.password = passText ? reinterpret_cast<const char*>(passText) : "";
+    }
+    else if (rc == SQLITE_DONE) {
+        // Not found → keep id = 0
+    }
+    else {
+        // Any other return means an execution error
+        logError("getStudentByUsername step", db);
+        student.id = -1;
+    }
+
+    finalize();
     return student;
 }
 

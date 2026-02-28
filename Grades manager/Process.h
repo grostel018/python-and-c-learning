@@ -4,7 +4,8 @@ struct sqlite3;      // forward declaration for the sqlite3 opaque type
 
 
 bool logIN(sqlite3* db, Student& loggedIn);
-void signIN();
+bool signUp(sqlite3* db, Student& loggedIn);
+
 void addCourse();
 void deleteCourse();
 void deleteUser();

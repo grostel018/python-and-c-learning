@@ -3,3 +3,5 @@
 
 double takeNumber();
 std::string takeString();
+std::string takePassword();
+std::string takeUsername();
