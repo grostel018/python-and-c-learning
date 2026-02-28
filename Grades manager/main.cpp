@@ -8,8 +8,8 @@
 #include "Process.h"
 
 int main() {
-    sqlite3* db = nullptr;
-    openAndInitDatabase("gpa.db");
+    
+    sqlite3* db = openAndInitDatabase("gpa.db");
     Student currentUser{};
 	
     welcome();

@@ -10,7 +10,7 @@ void welcome()
     taskDelimeter();
     std::cout << "\t*Welcome to the GPA calculator*" << std::endl;
     std::cout << "\t*You can either compute your GPA or you CGPA*" << std::endl;
-    taskDelimeter();
+    
 }
 
 void printCommands()
@@ -25,6 +25,6 @@ void printCommands()
     std::cout << "\t7- Delete a course\n";
     std::cout << "\t8- Delete user\n";
     std::cout << "\t9- Log out\n";
-    taskDelimeter();
+    
 
 }

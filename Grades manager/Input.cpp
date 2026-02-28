@@ -1,13 +1,15 @@
 #include "Input.h"
 #include <iostream>
 #include <cctype>
+#include "UI.h"
 
 
 
 
 double takeNumber()
 {
-    std::cout << "\nNumbers only : " << std::endl;
+    
+    std::cout << "Numbers only : " ;
     double number{ 0.0 };
     while (true)
     {
@@ -15,7 +17,7 @@ double takeNumber()
         {
             std::cin.ignore(10000, '\n');
 
-            std::cout << "\nInput registered successfully" << std::endl;
+            std::cout << "Input registered successfully" << std::endl;
 
             return number;  // No need for static_cast, number is already double
         }
@@ -28,7 +30,7 @@ double takeNumber()
 
 
     }
-
+    
 }
 
 
@@ -40,7 +42,7 @@ std::string takeString()
 {
     std::string text{ "" };
 
-    std::cout << "\nLetters and spaces only: " << std::endl;
+    std::cout << "Letters and spaces only: " ;
 
     while (true)
     {
@@ -56,11 +58,12 @@ std::string takeString()
         }
 
         if (valid) {
-            std::cout << "\nInput registered successfully" << std::endl;
+            std::cout << "Input registered successfully" << std::endl;
             return text;
         }
         else {
             std::cout << "Invalid input! Use only letters and spaces.\n";
         }
     }
+
 }

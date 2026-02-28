@@ -13,11 +13,17 @@
 
 
 bool logIN(sqlite3* db, Student& loggedIn) {
-    std::cout << "\tEnter your username\n";
-    std::string username = takeString();
 
-    std::cout << "\tEnter your password\n";
+    taskDelimeter();
+
+    std::cout << "Enter your username\n";
+    std::string username = takeString();
+    taskDelimeter();
+
+    std::cout << "Enter your password\n";
     std::string password = takeString();
+
+    taskDelimeter();
 
     Student s = getStudentByUsername(db, username);
 
