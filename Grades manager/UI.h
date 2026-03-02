@@ -2,3 +2,4 @@
 void taskDelimeter();
 void welcome();
 void printCommands();
+void printMenu();

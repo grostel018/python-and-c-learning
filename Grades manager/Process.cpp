@@ -5,6 +5,7 @@
 #include "Input.h"
 #include "database.h"
 #include <string>
+#include "Menu.h"
 
 
 
@@ -148,7 +149,8 @@ return true;
 
 
 
-void addCourse();
+void addCourse()
+{}
 
 
 
@@ -161,7 +163,8 @@ void addCourse();
 
 
 
-void deleteCourse();
+void deleteCourse()
+{}
 
 
 
@@ -175,7 +178,8 @@ void deleteCourse();
 
 
 
-void deleteUser();
+void deleteUser()
+{}
 
 
 
@@ -188,4 +192,24 @@ void deleteUser();
 
 
 
-void logOut();
+void logOut() {
+
+    std::cout << "Logged out\n";
+}
+
+
+
+
+
+void runApp(sqlite3* db)
+{
+    Student currentUser{};
+
+    while (true)
+    {
+        if (currentUser.id == 0)
+            mainMenu(db, currentUser);
+        else
+            studentMenu(db, currentUser);
+    }
+}

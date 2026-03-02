@@ -15,6 +15,7 @@ int main() {
     welcome();
     printCommands();
 
+    runApp(db);
 
     bool success = logIN(db, currentUser);
     if (success) {
@@ -22,7 +23,7 @@ int main() {
         std::cout << "Username: " << currentUser.username << "\n";
 
         // You can now call menu(currentUser) or dashboard(currentUser)
-        menu();
+        
     }
     else {
         std::cout << "Login failed.\n";
