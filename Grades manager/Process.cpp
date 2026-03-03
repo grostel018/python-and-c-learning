@@ -142,16 +142,58 @@ return true;
 
 
 
+// Small helper (so you don’t depend on unknown takeInt() implementations)
+static int takeIntInRange(int minV, int maxV) {
+    int x;
+    while (true) {
+        std::cin >> x;
+        if (!std::cin.fail() && x >= minV && x <= maxV) {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            return x;
+        }
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Invalid number. Try again: ";
+    }
+}
 
 
 
 
+Course addCourse(sqlite3* db, const Student& loggedIn) {
+    Course c{};
+    c.id = 0;
+    c.studentId = loggedIn.id;
 
+    taskDelimeter();
+    std::cout << "Enter course name\n";
+    c.name = takeString();
 
+    taskDelimeter();
+    std::cout << "Enter credits (1-30)\n";
+    c.credits = takeIntInRange(1, 30);
 
-void addCourse()
-{}
+    taskDelimeter();
+    std::cout << "Enter semester (1-20)\n";
+    c.semester = takeIntInRange(1, 20);
 
+    c.finalGrade = 0.0;           // computed later
+    c.components.clear();         // add later when you implement components
+
+    taskDelimeter();
+
+    if (!insertCourse(db, c)) {
+        std::cout << "Database error: course was not saved.\n";
+        c.id = -1; // mark failure if you want
+        return c;
+    }
+
+    std::cout << "Course added successfully (id=" << c.id << "): "
+        << c.name << " | credits=" << c.credits
+        << " | semester=" << c.semester << "\n";
+
+    return c;
+}
 
 
 
@@ -164,7 +206,12 @@ void addCourse()
 
 
 void deleteCourse()
-{}
+{
+
+
+
+
+}
 
 
 
@@ -179,7 +226,12 @@ void deleteCourse()
 
 
 void deleteUser()
-{}
+{
+
+
+
+
+}
 
 
 
