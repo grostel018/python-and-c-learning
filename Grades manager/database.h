@@ -27,7 +27,7 @@ bool    studentExists(sqlite3* db, const std::string& username);
 // Courses
 int              insertCourse(sqlite3* db, Course& course);
 std::vector<Course> getCoursesForStudent(sqlite3* db, int studentId, int semester);
-bool             deleteCourse(sqlite3* db, int id);
+bool             deleteCourse(sqlite3* db, int courseId, int studentId);
 bool             updateCourseGrade(sqlite3* db, int courseId, double finalGrade);
 
 

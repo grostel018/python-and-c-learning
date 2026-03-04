@@ -10,25 +10,12 @@
 int main() {
     
     sqlite3* db = openAndInitDatabase("gpa.db");
-    Student currentUser{};
 	
     welcome();
-    printCommands();
 
     runApp(db);
 
-    bool success = logIN(db, currentUser);
-    if (success) {
-        std::cout << "User ID: " << currentUser.id << "\n";
-        std::cout << "Username: " << currentUser.username << "\n";
-
-        // You can now call menu(currentUser) or dashboard(currentUser)
-        
-    }
-    else {
-        std::cout << "Login failed.\n";
-    }
-
+    
     sqlite3_close(db);
     return 0;
 

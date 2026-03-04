@@ -6,6 +6,7 @@
 #include "database.h"
 #include <string>
 #include "Menu.h"
+#include "Models.h"
 
 
 
@@ -142,22 +143,6 @@ return true;
 
 
 
-// Small helper (so you don’t depend on unknown takeInt() implementations)
-static int takeIntInRange(int minV, int maxV) {
-    int x;
-    while (true) {
-        std::cin >> x;
-        if (!std::cin.fail() && x >= minV && x <= maxV) {
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            return x;
-        }
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "Invalid number. Try again: ";
-    }
-}
-
-
 
 
 Course addCourse(sqlite3* db, const Student& loggedIn) {
@@ -177,16 +162,20 @@ Course addCourse(sqlite3* db, const Student& loggedIn) {
     std::cout << "Enter semester (1-20)\n";
     c.semester = takeIntInRange(1, 20);
 
-    c.finalGrade = 0.0;           // computed later
-    c.components.clear();         // add later when you implement components
+    c.finalGrade = 0.0;
+    c.components.clear();
 
     taskDelimeter();
 
-    if (!insertCourse(db, c)) {
+    int newId = insertCourse(db, c);
+    if (newId == -1) { // ✅ correct check
         std::cout << "Database error: course was not saved.\n";
-        c.id = -1; // mark failure if you want
+        c.id = -1;
         return c;
     }
+
+    // c.id already set inside insertCourse, but keeping it explicit is fine:
+    c.id = newId;
 
     std::cout << "Course added successfully (id=" << c.id << "): "
         << c.name << " | credits=" << c.credits
@@ -205,12 +194,21 @@ Course addCourse(sqlite3* db, const Student& loggedIn) {
 
 
 
-void deleteCourse()
+void deleteCourse(sqlite3* db, const Student& loggedIn)
 {
+    taskDelimeter();
 
+    std::cout << "Enter the ID of the course to delete:\n";
+    int id = takeIntInRange(1, 1000000);
 
+    taskDelimeter();
 
+    if (!deleteCourse(db, id, loggedIn.id)) {
+        std::cout << "Could not delete course.\n";
+        return;
+    }
 
+    std::cout << "Course deleted successfully.\n";
 }
 
 
@@ -223,14 +221,32 @@ void deleteCourse()
 
 
 
-
-
-void deleteUser()
+void deleteUser(sqlite3* db, Student& loggedIn)
 {
+    taskDelimeter();
 
+    std::cout << "Are you sure you want to delete your account?\n";
+    std::cout << "This will permanently delete all your data.\n";
+    std::cout << "Type \"YES\"or \"Y\" to confirm: ";
 
+    std::string confirm;
+    std::getline(std::cin, confirm);
 
+    if ((confirm != "YES") || (confirm != "yes") || (confirm != "y") || (confirm != "Y")) {
+        std::cout << "Account deletion cancelled.\n";
+        return;
+    }
 
+    taskDelimeter();
+
+    if (!deleteStudent(db, loggedIn.id)) {
+        std::cout << "Database error. Could not delete account.\n";
+        return;
+    }
+
+    std::cout << "Account deleted successfully.\n";
+
+    loggedIn = {};  // reset logged user
 }
 
 
@@ -243,13 +259,16 @@ void deleteUser()
 
 
 
+void logOut(Student& loggedIn)
+{
+    taskDelimeter();
 
-void logOut() {
+    loggedIn = {};   // reset the struct (id becomes 0, strings empty)
 
-    std::cout << "Logged out\n";
+    std::cout << "You have been logged out successfully.\n";
+
+    taskDelimeter();
 }
-
-
 
 
 

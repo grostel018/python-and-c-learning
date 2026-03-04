@@ -146,3 +146,23 @@ std::string takeUsername()
         }
     }
 }
+
+
+// Small helper (so you don’t depend on unknown takeInt() implementations)
+int takeIntInRange(int minV, int maxV) {
+    int x;
+
+    while (true) {
+
+        if (std::cin >> x && x >= minV && x <= maxV) {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            return x;
+        }
+
+        std::cout << "Invalid number. Enter a value between "
+            << minV << " and " << maxV << ": ";
+
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+}

@@ -387,30 +387,32 @@ bool studentExists(sqlite3* db, const std::string& username) {
  */
 int insertCourse(sqlite3* db, Course& course) {
     const char* sql =
-        "INSERT INTO courses (student_id, name, credits, semester, final_grade)"
-        " VALUES (?, ?, ?, ?, ?);";
-    sqlite3_stmt* stmt;
+        "INSERT INTO courses (student_id, name, credits, semester, final_grade) "
+        "VALUES (?, ?, ?, ?, ?);";
+
+    sqlite3_stmt* stmt = nullptr;
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        logError("insertCourse prepare", db); return -1;
+        logError("insertCourse prepare", db);
+        return -1;
     }
 
     sqlite3_bind_int(stmt, 1, course.studentId);
-    sqlite3_bind_text(stmt, 2, course.name.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 2, course.name.c_str(), -1, SQLITE_TRANSIENT); // ✅
     sqlite3_bind_int(stmt, 3, course.credits);
     sqlite3_bind_int(stmt, 4, course.semester);
     sqlite3_bind_double(stmt, 5, course.finalGrade);
 
     if (sqlite3_step(stmt) != SQLITE_DONE) {
         logError("insertCourse step", db);
-        sqlite3_finalize(stmt); return -1;
+        sqlite3_finalize(stmt);
+        return -1;
     }
 
-    course.id = (int)sqlite3_last_insert_rowid(db);
+    course.id = static_cast<int>(sqlite3_last_insert_rowid(db));
     sqlite3_finalize(stmt);
-    return course.id;
+    return course.id; // >0 on success, -1 on error
 }
-
 /**
  * @brief Get all courses for a student in a given semester.
  *
@@ -460,16 +462,22 @@ std::vector<Course> getCoursesForStudent(sqlite3* db, int studentId, int semeste
  * @param id The id of the course to delete.
  * @return true if deletion succeeded, false otherwise.
  */
-bool deleteCourse(sqlite3* db, int id) {
-    const char* sql = "DELETE FROM courses WHERE id = ?;";
-    sqlite3_stmt* stmt;
+bool deleteCourse(sqlite3* db, int courseId, int studentId) {
+    const char* sql =
+        "DELETE FROM courses WHERE id = ? AND student_id = ?;";
+
+    sqlite3_stmt* stmt = nullptr;
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        logError("deleteCourse prepare", db); return false;
+        logError("deleteCourse prepare", db);
+        return false;
     }
 
-    sqlite3_bind_int(stmt, 1, id);
+    sqlite3_bind_int(stmt, 1, courseId);
+    sqlite3_bind_int(stmt, 2, studentId);
+
     bool ok = sqlite3_step(stmt) == SQLITE_DONE;
+
     sqlite3_finalize(stmt);
     return ok;
 }
