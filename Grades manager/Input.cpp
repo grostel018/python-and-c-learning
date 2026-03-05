@@ -9,7 +9,7 @@
 double takeNumber()
 {
     
-    std::cout << "Numbers only : " ;
+    std::cout << "Enter numbers only : " ;
     double number{ 0.0 };
     while (true)
     {
@@ -135,7 +135,7 @@ std::string takeUsername()
         }
 
         if (valid) {
-            std::cout << "Username registered successfully\n";
+            std::cout << "Username Entered successfully\n";
             return username;
         }
         else {

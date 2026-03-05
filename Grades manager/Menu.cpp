@@ -31,10 +31,14 @@ void mainMenu(sqlite3* db, Student& currentUser) {
 
         switch (choice) {
 
-        case 1: success = logIN(db, currentUser);
+        case 1: {success = logIN(db, currentUser);
+        return;
+        }
             break;
 
-        case 2: success = signUp(db, currentUser);
+        case 2: {success = signUp(db, currentUser);
+        return;
+        }
             break;
 
         case 3: {logOut(currentUser) ; std::cout << "Exiting...\n"; return;}
@@ -66,7 +70,7 @@ void studentMenu(sqlite3* db, Student& currentUser) {
         {
 
             std::cout << "Choose your task and press Enter \n";
-            printCommands();
+            printMenuCommands();
             choice = takeNumber();
 
             switch (choice) {
