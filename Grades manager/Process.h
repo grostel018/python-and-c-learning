@@ -13,5 +13,6 @@ Course addCourse(sqlite3* db, const Student& loggedIn);
 void deleteCourse(sqlite3* db, const Student& loggedIn);
 void deleteUser(sqlite3* db, Student& loggedIn);
 void logOut(Student& loggedIn);
+void displayStudentInfo(const Student& s);
 
 

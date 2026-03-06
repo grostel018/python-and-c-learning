@@ -30,10 +30,10 @@ void printMenuCommands()
     std::cout << "\t2- To Compute a course's semester grade (And add it to the course)\n";
     std::cout << "\t3- To Calculate the current GPA\n";
     std::cout << "\t4- To Calculate the current CGPA\n";
-    std::cout << "\t4- To display the student's information\n";
     std::cout << "\t5- To Delete a course\n";
     std::cout << "\t6- To Delete user\n";
-    std::cout << "\t7- To Log out\n";
+    std::cout << "\t7- To display the student's information\n";
+    std::cout << "\t8- To log Out \n";
 
 
 }

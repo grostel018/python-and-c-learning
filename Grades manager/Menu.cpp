@@ -75,7 +75,7 @@ void studentMenu(sqlite3* db, Student& currentUser) {
 
             switch (choice) {
 
-            case 1: //addCourse();
+            case 1: addCourse(db, currentUser);
                 break;
 
             case 2: //courseGradeCalculator();
@@ -93,7 +93,7 @@ void studentMenu(sqlite3* db, Student& currentUser) {
             case 6: //deleteUser();
                 break;
 
-            case 7: //display user's info, courses, grades and GPA;
+            case 7: displayStudentInfo(currentUser);
                 break;
 
             case 8: //{logOut() ; std::cout << "Exiting...\n"; return;}

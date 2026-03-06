@@ -7,6 +7,7 @@
 #include <string>
 #include "Menu.h"
 #include "Models.h"
+#include <iomanip>
 
 
 
@@ -250,7 +251,26 @@ void deleteUser(sqlite3* db, Student& loggedIn)
 }
 
 
+void displayStudentInfo(const Student& s)
+{
+    taskDelimeter();
 
+    if (s.id == 0) {
+        std::cout << "No user logged in.\n";
+        taskDelimeter();
+        return;
+    }
+
+    std::cout << "----- STUDENT PROFILE -----\n\n";
+
+    std::cout << "Name      : " << s.name << "\n";
+    std::cout << "Username  : " << s.username << "\n";
+    std::cout << "Courses   : " << s.courses.size() << "\n";
+    std::cout << "GPA       : " << std::fixed << std::setprecision(2) << s.gpa << "\n";
+    std::cout << "CGPA      : " << std::fixed << std::setprecision(2) << s.cgpa << "\n";
+
+    taskDelimeter();
+}
 
 
 
