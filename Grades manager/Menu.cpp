@@ -6,6 +6,7 @@
 #include "src/sqlite3.h"
 #include "database.h"
 #include <string>
+#include "Calculs.h"
 
 
 
@@ -78,7 +79,7 @@ void studentMenu(sqlite3* db, Student& currentUser) {
             case 1: addCourse(db, currentUser);
                 break;
 
-            case 2: //courseGradeCalculator();
+            case 2: 
                 break;
 
             case 3: //std::cout << " current GPA calculated\n";
@@ -87,16 +88,16 @@ void studentMenu(sqlite3* db, Student& currentUser) {
             case 4: //std::cout << " current CGPA calculated\n";
                 break;
 
-            case 5: //deleteCourse();
+            case 5: deleteCourse(db, currentUser);
                 break;
 
-            case 6: //deleteUser();
+            case 6: deleteUser(db, currentUser);
                 break;
 
             case 7: displayStudentInfo(currentUser);
                 break;
 
-            case 8: //{logOut() ; std::cout << "Exiting...\n"; return;}
+            case 8: {logOut(currentUser) ; std::cout << "Exiting...\n"; return;}
                 break;
             default:std::cout << "invalid choice, please choose between (1-10)\n";
 
