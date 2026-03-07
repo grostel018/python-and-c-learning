@@ -14,5 +14,7 @@ void deleteCourse(sqlite3* db, const Student& loggedIn);
 void deleteUser(sqlite3* db, Student& loggedIn);
 void logOut(Student& loggedIn);
 void displayStudentInfo(const Student& s);
+void courseAdder(double& grade, std::string& name, double& weight);
+bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn);
 
 

@@ -6,27 +6,6 @@
 
 
 
-void courseAdder(double& grade, std::string& name, double& weight) {
-    std::cout << "\nEnter the lecture's name : ";
-
-    name = takeString();
-
-    taskDelimeter();
-
-    std::cout << "\nEnter the lecture's grade : ";
-
-    grade = takeNumber();
-
-    taskDelimeter();
-
-    std::cout << "\nEnter the lecture's weight : ";
-
-    weight = takeNumber();
-
-    taskDelimeter();
-}
-
-
 
 
 

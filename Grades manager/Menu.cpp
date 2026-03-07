@@ -79,10 +79,10 @@ void studentMenu(sqlite3* db, Student& currentUser) {
             case 1: addCourse(db, currentUser);
                 break;
 
-            case 2: 
+            case 2: setStudentCourseGrade(db, currentUser);
                 break;
 
-            case 3: //std::cout << " current GPA calculated\n";
+            case 3: //courseGradeCalculator();
                 break;
 
             case 4: //std::cout << " current CGPA calculated\n";
