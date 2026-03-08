@@ -7,16 +7,17 @@
 #include "database.h"
 #include "Process.h"
 
-int main() {
-    
+int main()
+{
     sqlite3* db = openAndInitDatabase("gpa.db");
-	
-    welcome();
+    if (!db) {
+        std::cerr << "Failed to initialize database.\n";
+        return 1;
+    }
 
+    welcome();
     runApp(db);
 
-    
     sqlite3_close(db);
     return 0;
-
 }

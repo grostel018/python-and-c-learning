@@ -2,14 +2,14 @@
 #include <iostream>
 #include <cctype>
 #include "UI.h"
-
+#include <limits>
 
 
 
 double takeNumber()
 {
     
-    std::cout << "Enter numbers only : " ;
+    std::cout << "Enter numbers : " ;
     double number{ 0.0 };
     while (true)
     {
@@ -164,5 +164,18 @@ int takeIntInRange(int minV, int maxV) {
 
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+}
+
+//make a better version of this : 
+
+std::string takeLineNonEmpty()
+{
+    std::string text;
+    while (true)
+    {
+        std::getline(std::cin >> std::ws, text);
+        if (!text.empty()) return text;
+        std::cout << "Input cannot be empty.\n";
     }
 }

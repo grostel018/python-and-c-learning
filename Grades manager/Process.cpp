@@ -8,6 +8,7 @@
 #include "Menu.h"
 #include "Models.h"
 #include <iomanip>
+#include "Calculs.h"
 
 
 
@@ -72,59 +73,52 @@ bool logIN(sqlite3* db, Student& loggedIn) {
 
     loggedIn = s;
     std::cout << "Login successful. Welcome " << loggedIn.name << "!\n";
+    loggedIn.courses = getCoursesByStudentId(db, loggedIn.id);
+    computeGPA(loggedIn);
     return true;
 }
 
 
 
 
-bool signUp(sqlite3* db, Student& loggedIn){
+bool signUp(sqlite3* db, Student& loggedIn)
+{
     taskDelimeter();
-   
+
     std::cout << "Enter your Full name\n";
     loggedIn.name = takeString();
 
     taskDelimeter();
 
-    
-
     bool valid = false;
 
-    while (!valid)  {
-
-        std::cout << "Enter an username\n";
+    while (!valid)
+    {
+        std::cout << "Enter a username\n";
         loggedIn.username = takeUsername();
 
-    Student check = getStudentByUsername(db, loggedIn.username);
+        Student check = getStudentByUsername(db, loggedIn.username);
 
-    if (check.id == -1) 
-    { 
-    std::cout << "Database error.\n"; 
-    return false;
-    }
+        if (check.id == -1) {
+            std::cout << "Database error.\n";
+            return false;
+        }
 
-    if (check.id != 0) 
-    { 
-    std::cout << "Username already taken\n"; 
-    taskDelimeter();
+        if (check.id != 0) {
+            std::cout << "Username already taken\n";
+            taskDelimeter();
+        }
+        else {
+            std::cout << "Good, that's a valid username\n";
+            valid = true;
+        }
     }
-
-    else {
-        std::cout << "Good, that's a Valid username\n";
-        valid = true;
-    }
-    
-    }
-
 
     taskDelimeter();
 
     bool equal = false;
-
-    std::string password1 {};
-
-    std::string password2 {};
-
+    std::string password1{};
+    std::string password2{};
 
     while (!equal)
     {
@@ -144,18 +138,19 @@ bool signUp(sqlite3* db, Student& loggedIn){
     }
 
     loggedIn.password = password1;
-    
-    if (!insertStudent(db, loggedIn)) {
+
+    int newId = insertStudent(db, loggedIn);
+    if (newId == -1) {
         std::cout << "Database error.\n";
         return false;
     }
 
-    std::cout << "Registered succesfully. Welcome " << loggedIn.name << "!\n";
-    
+    loggedIn.courses.clear();
+    loggedIn.gpa = 0.0;
+    loggedIn.cgpa = 0.0;
 
-
-
-return true;
+    std::cout << "Registered successfully. Welcome " << loggedIn.name << "!\n";
+    return true;
 }
 
 
@@ -176,7 +171,7 @@ Course addCourse(sqlite3* db, const Student& loggedIn) {
 
     taskDelimeter();
     std::cout << "Enter course name\n";
-    c.name = takeString();
+    c.name = takeLineNonEmpty();
 
     taskDelimeter();
     std::cout << "Enter credits (1-30)\n";
@@ -218,7 +213,7 @@ Course addCourse(sqlite3* db, const Student& loggedIn) {
 
 
 
-void deleteCourse(sqlite3* db, const Student& loggedIn)
+void deleteCourseFlow(sqlite3* db, const Student& loggedIn)
 {
     taskDelimeter();
 
@@ -256,7 +251,7 @@ void deleteUser(sqlite3* db, Student& loggedIn)
     std::string confirm;
     std::getline(std::cin, confirm);
 
-    if ((confirm != "YES") || (confirm != "yes") || (confirm != "y") || (confirm != "Y")) {
+    if (confirm != "YES" && confirm != "yes" && confirm != "y" && confirm != "Y") {
         std::cout << "Account deletion cancelled.\n";
         return;
     }
@@ -274,26 +269,6 @@ void deleteUser(sqlite3* db, Student& loggedIn)
 }
 
 
-void displayStudentInfo(const Student& s)
-{
-    taskDelimeter();
-
-    if (s.id == 0) {
-        std::cout << "No user logged in.\n";
-        taskDelimeter();
-        return;
-    }
-
-    std::cout << "----- STUDENT PROFILE -----\n\n";
-
-    std::cout << "Name      : " << s.name << "\n";
-    std::cout << "Username  : " << s.username << "\n";
-    std::cout << "Courses   : " << s.courses.size() << "\n";
-    std::cout << "GPA       : " << std::fixed << std::setprecision(2) << s.gpa << "\n";
-    std::cout << "CGPA      : " << std::fixed << std::setprecision(2) << s.cgpa << "\n";
-
-    taskDelimeter();
-}
 
 
 
@@ -308,7 +283,7 @@ void logOut(Student& loggedIn)
 
     loggedIn = {};   // reset the struct (id becomes 0, strings empty)
 
-    std::cout << "You have been logged out successfully.\n";
+    std::cout << "Closed successfully.\n";
 
     taskDelimeter();
 }
@@ -318,13 +293,14 @@ void logOut(Student& loggedIn)
 void runApp(sqlite3* db)
 {
     Student currentUser{};
+    bool running = true;
 
-    while (true)
+    while (running)
     {
         if (currentUser.id == 0)
-            mainMenu(db, currentUser);
+            mainMenu(db, currentUser, running);
         else
-            studentMenu(db, currentUser);
+            studentMenu(db, currentUser, running);
     }
 }
 
@@ -335,7 +311,7 @@ bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn)
 {
     taskDelimeter();
     std::cout << "Enter the course ID to grade:\n";
-    int courseId = takeNumber();
+    int courseId = takeIntInRange(1, 1000000);
 
     taskDelimeter();
     std::cout << "Enter the final grade (0-100):\n";

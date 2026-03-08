@@ -361,7 +361,7 @@ bool studentExists(sqlite3* db, const std::string& username) {
         logError("studentExists prepare", db); return false;
     }
 
-    sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_TRANSIENT);
     bool exists = false;
 
     if (sqlite3_step(stmt) == SQLITE_ROW)
@@ -462,7 +462,8 @@ std::vector<Course> getCoursesForStudent(sqlite3* db, int studentId, int semeste
  * @param id The id of the course to delete.
  * @return true if deletion succeeded, false otherwise.
  */
-bool deleteCourse(sqlite3* db, int courseId, int studentId) {
+bool deleteCourse(sqlite3* db, int courseId, int studentId)
+{
     const char* sql =
         "DELETE FROM courses WHERE id = ? AND student_id = ?;";
 
@@ -476,12 +477,15 @@ bool deleteCourse(sqlite3* db, int courseId, int studentId) {
     sqlite3_bind_int(stmt, 1, courseId);
     sqlite3_bind_int(stmt, 2, studentId);
 
-    bool ok = sqlite3_step(stmt) == SQLITE_DONE;
+    bool ok = false;
+
+    if (sqlite3_step(stmt) == SQLITE_DONE) {
+        ok = sqlite3_changes(db) > 0;
+    }
 
     sqlite3_finalize(stmt);
     return ok;
 }
-
 /**
  * @brief Update the stored final grade for a course.
  *
@@ -533,7 +537,7 @@ int insertGradeComponent(sqlite3* db, GradeComponent& component) {
     }
 
     sqlite3_bind_int(stmt, 1, component.courseId);
-    sqlite3_bind_text(stmt, 2, component.label.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 2, component.label.c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_double(stmt, 3, component.grade);
     sqlite3_bind_double(stmt, 4, component.weight);
 
@@ -582,4 +586,45 @@ std::vector<GradeComponent> getComponentsForCourse(sqlite3* db, int courseId) {
 
     sqlite3_finalize(stmt);
     return components;
+}
+
+
+
+std::vector<Course> getCoursesByStudentId(sqlite3* db, int studentId)
+{
+    std::vector<Course> courses;
+
+    const char* sql =
+        "SELECT id, student_id, name, credits, semester, final_grade "
+        "FROM courses "
+        "WHERE student_id = ? "
+        "ORDER BY semester, name;";
+
+    sqlite3_stmt* stmt = nullptr;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        logError("getCoursesByStudentId prepare", db);
+        return courses;
+    }
+
+    sqlite3_bind_int(stmt, 1, studentId);
+
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        Course c{};
+
+        c.id = sqlite3_column_int(stmt, 0);
+        c.studentId = sqlite3_column_int(stmt, 1);
+
+        const unsigned char* text = sqlite3_column_text(stmt, 2);
+        c.name = text ? reinterpret_cast<const char*>(text) : "";
+
+        c.credits = sqlite3_column_int(stmt, 3);
+        c.semester = sqlite3_column_int(stmt, 4);
+        c.finalGrade = sqlite3_column_double(stmt, 5);
+
+        courses.push_back(c);
+    }
+
+    sqlite3_finalize(stmt);
+    return courses;
 }

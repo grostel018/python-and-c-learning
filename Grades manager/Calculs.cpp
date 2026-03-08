@@ -2,7 +2,55 @@
 #include "Input.h"
 #include "UI.h"
 #include <iostream>
+#include "Models.h"
 
+
+
+void computeGPA(Student& student)
+{
+    if (student.courses.empty()) {
+        student.gpa = 0.0;
+        student.cgpa = 0.0;
+        return;
+    }
+
+    int currentSemester = student.courses[0].semester;
+
+    // Find the latest semester
+    for (const Course& c : student.courses) {
+        if (c.semester > currentSemester) {
+            currentSemester = c.semester;
+        }
+    }
+
+    double semesterWeightedSum = 0.0;
+    int semesterCredits = 0;
+
+    double cumulativeWeightedSum = 0.0;
+    int cumulativeCredits = 0;
+
+    for (const Course& c : student.courses) {
+        if (c.credits <= 0) continue;
+
+        // CGPA = all courses
+        cumulativeWeightedSum += c.finalGrade * c.credits;
+        cumulativeCredits += c.credits;
+
+        // GPA = only current/latest semester
+        if (c.semester == currentSemester) {
+            semesterWeightedSum += c.finalGrade * c.credits;
+            semesterCredits += c.credits;
+        }
+    }
+
+    student.gpa = (semesterCredits > 0)
+        ? (semesterWeightedSum / semesterCredits)
+        : 0.0;
+
+    student.cgpa = (cumulativeCredits > 0)
+        ? (cumulativeWeightedSum / cumulativeCredits)
+        : 0.0;
+}
 
 
 

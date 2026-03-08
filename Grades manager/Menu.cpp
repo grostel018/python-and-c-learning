@@ -16,101 +16,97 @@ void choose()
     std::cout << "\tYou choosed\n";
 }
 
-void mainMenu(sqlite3* db, Student& currentUser) {
 
 
-    int choice{ 0 };
-
-
+void mainMenu(sqlite3* db, Student& currentUser, bool& running)
+{
     while (true)
-    {   
-        bool success = true;
-
-        std::cout << "Choose your task and press Enter \n";
+    {
+        std::cout << "Choose your task and press Enter\n";
         printCommands();
-        choice = takeNumber();
 
-        switch (choice) {
+        int choice = takeIntInRange(1, 3);
 
-        case 1: {success = logIN(db, currentUser);
-        return;
-        }
+        switch (choice)
+        {
+        case 1:
+            logIN(db, currentUser);
+            return;
+
+        case 2:
+            signUp(db, currentUser);
+            return;
+
+        case 3:
+            std::cout << "Exiting...\n";
+            running = false;
+            return;
+
+        default:
+            std::cout << "Invalid choice, please choose between (1-3)\n";
             break;
-
-        case 2: {success = signUp(db, currentUser);
-        return;
         }
-            break;
-
-        case 3: {logOut(currentUser) ; std::cout << "Exiting...\n"; return;}
-            break;
-        default:std::cout << "invalid choice, please choose between (1-3)\n";
-        
-
-
-
-        }
-
-
-
-
     }
-
-
 }
 
 
 
-void studentMenu(sqlite3* db, Student& currentUser) {
+void studentMenu(sqlite3* db, Student& currentUser, bool& running)
+{
+    while (true)
+    {
+        currentUser.courses = getCoursesByStudentId(db, currentUser.id);
 
+        std::cout << "Choose your task and press Enter\n";
+        printMenuCommands();
+        int choice = takeIntInRange(1, 8);
 
-        int choice{ 0 };
-
-
-        while (true)
+        switch (choice)
         {
+        case 1:
+            addCourse(db, currentUser);
+            break;
 
-            std::cout << "Choose your task and press Enter \n";
-            printMenuCommands();
-            choice = takeNumber();
+        case 2:
+            setStudentCourseGrade(db, currentUser);
+            break;
 
-            switch (choice) {
+        case 3:
+            currentUser.courses = getCoursesByStudentId(db, currentUser.id);
+            computeGPA(currentUser);
+            std::cout << "Current GPA calculated successfully.\n";
+            break;
 
-            case 1: addCourse(db, currentUser);
-                break;
+        case 4:
+            currentUser.courses = getCoursesByStudentId(db, currentUser.id);
+            computeGPA(currentUser);
+            std::cout << "Current CGPA calculated successfully.\n";
+            break;
 
-            case 2: setStudentCourseGrade(db, currentUser);
-                break;
+        case 5:
+            deleteCourseFlow(db, currentUser);
+            break;
 
-            case 3: //courseGradeCalculator();
-                break;
+        case 6:
+            deleteUser(db, currentUser);
+            if (currentUser.id == 0) return;
+            break;
 
-            case 4: //std::cout << " current CGPA calculated\n";
-                break;
+        case 7:
+            currentUser.courses = getCoursesByStudentId(db, currentUser.id);
+            computeGPA(currentUser);
+            displayStudentInfo(currentUser);
+            break;
 
-            case 5: deleteCourse(db, currentUser);
-                break;
+        case 8:
+        { logOut(currentUser); std::cout << "Logged out successfully.\n"; return; }
 
-            case 6: deleteUser(db, currentUser);
-                break;
-
-            case 7: displayStudentInfo(currentUser);
-                break;
-
-            case 8: {logOut(currentUser) ; std::cout << "Exiting...\n"; return;}
-                break;
-            default:std::cout << "invalid choice, please choose between (1-10)\n";
-
-            }
-
-
-
-
+        default:
+            std::cout << "Invalid choice, please choose between (1-8)\n";
+            break;
         }
-
-
-        }
-
+    }
+}
         
 
         

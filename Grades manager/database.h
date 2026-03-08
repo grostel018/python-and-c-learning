@@ -35,3 +35,4 @@ bool             updateCourseGrade(sqlite3* db, int courseId, double finalGrade)
 // Grade Components
 int  insertGradeComponent(sqlite3* db, GradeComponent& component);
 std::vector<GradeComponent> getComponentsForCourse(sqlite3* db, int courseId);
+std::vector<Course> getCoursesByStudentId(sqlite3* db, int studentId);
