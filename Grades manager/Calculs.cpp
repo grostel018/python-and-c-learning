@@ -32,13 +32,15 @@ void computeGPA(Student& student)
     for (const Course& c : student.courses) {
         if (c.credits <= 0) continue;
 
+        double gradePoint = c.finalGrade / 25.0;
+
         // CGPA = all courses
-        cumulativeWeightedSum += c.finalGrade * c.credits;
+        cumulativeWeightedSum += gradePoint * c.credits;
         cumulativeCredits += c.credits;
 
         // GPA = only current/latest semester
         if (c.semester == currentSemester) {
-            semesterWeightedSum += c.finalGrade * c.credits;
+            semesterWeightedSum += gradePoint * c.credits;
             semesterCredits += c.credits;
         }
     }

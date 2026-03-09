@@ -81,6 +81,8 @@ void displayStudentInfo(const Student& s)
     if (currentSemester > 0)
         std::cout << "Semester  : " << currentSemester << "\n";
 
+
+
     std::cout << "GPA       : " << std::fixed << std::setprecision(2) << s.gpa << "\n";
     std::cout << "CGPA      : " << std::fixed << std::setprecision(2) << s.cgpa << "\n";
 
