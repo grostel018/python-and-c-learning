@@ -464,9 +464,7 @@ std::vector<Course> getCoursesForStudent(sqlite3* db, int studentId, int semeste
  */
 bool deleteCourse(sqlite3* db, int courseId, int studentId)
 {
-    const char* sql =
-        "DELETE FROM courses WHERE id = ? AND student_id = ?;";
-
+    const char* sql = "DELETE FROM courses WHERE id = ? AND student_id = ?;";
     sqlite3_stmt* stmt = nullptr;
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
@@ -477,14 +475,13 @@ bool deleteCourse(sqlite3* db, int courseId, int studentId)
     sqlite3_bind_int(stmt, 1, courseId);
     sqlite3_bind_int(stmt, 2, studentId);
 
-    bool ok = false;
+    bool ok = (sqlite3_step(stmt) == SQLITE_DONE);
 
-    if (sqlite3_step(stmt) == SQLITE_DONE) {
-        ok = sqlite3_changes(db) > 0;
-    }
+    int changes = sqlite3_changes(db);
 
     sqlite3_finalize(stmt);
-    return ok;
+
+    return ok && changes > 0;
 }
 /**
  * @brief Update the stored final grade for a course.

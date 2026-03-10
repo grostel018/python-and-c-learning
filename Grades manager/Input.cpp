@@ -15,7 +15,7 @@ double takeNumber()
     {
         if (std::cin >> number)
         {
-            std::cin.ignore(10000, '\n');
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
             std::cout << "Input registered successfully" << std::endl;
 

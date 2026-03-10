@@ -9,6 +9,7 @@
 #include "Models.h"
 #include <iomanip>
 #include "Calculs.h"
+#include <algorithm>
 
 
 
@@ -215,15 +216,43 @@ Course addCourse(sqlite3* db, const Student& loggedIn) {
 
 void deleteCourseFlow(sqlite3* db, const Student& loggedIn)
 {
+
+    if (loggedIn.id == 0) {
+        std::cout << "No user is currently logged in.\n";
+        return;
+    }
+
     taskDelimeter();
+
+    if (loggedIn.courses.empty()) {
+        std::cout << "You have no courses to delete.\n";
+        return;
+    }
+
+
+    std::cout << "----- COURSES -----\n\n";
+
+    for (const Course& c : loggedIn.courses) {
+        std::cout << "Course ID    : " << c.id << "\n";
+        std::cout << "Name         : " << c.name << "\n";
+        std::cout << "Credits      : " << c.credits << "\n";
+        std::cout << "Semester     : " << c.semester << "\n";
+        std::cout << "Final Grade  : " << std::fixed << std::setprecision(2) << c.finalGrade << "\n";
+        taskDelimeter();
+    }
+
+
+
 
     std::cout << "Enter the ID of the course to delete:\n";
     int id = takeIntInRange(1, 1000000);
 
     taskDelimeter();
 
+
+
     if (!deleteCourse(db, id, loggedIn.id)) {
-        std::cout << "Could not delete course.\n";
+        std::cout << "Could not delete course. Invalid ID or database error.\n";
         return;
     }
 
@@ -242,6 +271,12 @@ void deleteCourseFlow(sqlite3* db, const Student& loggedIn)
 
 void deleteUser(sqlite3* db, Student& loggedIn)
 {
+
+    if (loggedIn.id == 0) {
+        std::cout << "No user is currently logged in.\n";
+        return;
+    }
+
     taskDelimeter();
 
     std::cout << "Are you sure you want to delete your account?\n";
@@ -249,9 +284,13 @@ void deleteUser(sqlite3* db, Student& loggedIn)
     std::cout << "Type \"YES\"or \"Y\" to confirm: ";
 
     std::string confirm;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::getline(std::cin, confirm);
 
-    if (confirm != "YES" && confirm != "yes" && confirm != "y" && confirm != "Y") {
+
+    std::transform(confirm.begin(), confirm.end(), confirm.begin(), ::toupper);
+
+    if (confirm != "YES" && confirm != "Y") {
         std::cout << "Account deletion cancelled.\n";
         return;
     }
@@ -309,6 +348,11 @@ void runApp(sqlite3* db)
 
 bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn)
 {
+    if (loggedIn.id == 0) {
+        std::cout << "No user is currently logged in.\n";
+        return false;
+    }
+
     taskDelimeter();
     std::cout << "Enter the course ID to grade:\n";
     int courseId = takeIntInRange(1, 1000000);

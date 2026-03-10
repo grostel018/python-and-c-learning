@@ -53,6 +53,12 @@ void mainMenu(sqlite3* db, Student& currentUser, bool& running)
 
 void studentMenu(sqlite3* db, Student& currentUser, bool& running)
 {
+
+    if (currentUser.id == 0) {
+        std::cout << "No user is currently logged in.\n";
+        return;
+    }
+
     while (true)
     {
         currentUser.courses = getCoursesByStudentId(db, currentUser.id);
@@ -72,13 +78,13 @@ void studentMenu(sqlite3* db, Student& currentUser, bool& running)
             break;
 
         case 3:
-            currentUser.courses = getCoursesByStudentId(db, currentUser.id);
+            
             computeGPA(currentUser);
             std::cout << "Current GPA calculated successfully.\n";
             break;
 
         case 4:
-            currentUser.courses = getCoursesByStudentId(db, currentUser.id);
+            
             computeGPA(currentUser);
             std::cout << "Current CGPA calculated successfully.\n";
             break;
@@ -93,7 +99,7 @@ void studentMenu(sqlite3* db, Student& currentUser, bool& running)
             break;
 
         case 7:
-            currentUser.courses = getCoursesByStudentId(db, currentUser.id);
+            
             computeGPA(currentUser);
             displayStudentInfo(currentUser);
             break;

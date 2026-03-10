@@ -14,7 +14,7 @@ void computeGPA(Student& student)
         return;
     }
 
-    int currentSemester = student.courses[0].semester;
+    int currentSemester = 0;
 
     // Find the latest semester
     for (const Course& c : student.courses) {
