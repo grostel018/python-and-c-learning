@@ -33,7 +33,7 @@ void printMenuCommands()
     std::cout << "\t1- To Add a course\n";
     std::cout << "\t2- To set a student's course grade\n";
     std::cout << "\t3- To Calculate the current GPA\n";
-    std::cout << "\t4- To Calculate the current CGPA\n";
+    std::cout << "\t4- To update a student's info\n";
     std::cout << "\t5- To Delete a course\n";
     std::cout << "\t6- To Delete user\n";
     std::cout << "\t7- To display All the student's information\n";

@@ -660,3 +660,38 @@ bool updateStudent(sqlite3* db, int id, const std::string& name, const std::stri
 
     return changes > 0;
 }
+
+
+
+
+bool updateCourseGradeForStudent(sqlite3* db, int courseId, int studentId, double grade)
+{
+    const char* sql =
+        "UPDATE courses "
+        "SET final_grade = ? "
+        "WHERE id = ? AND student_id = ?;";
+
+    sqlite3_stmt* stmt = nullptr;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        logError("updateCourseGradeForStudent prepare", db);
+        return false;
+    }
+
+    sqlite3_bind_double(stmt, 1, grade);
+    sqlite3_bind_int(stmt, 2, courseId);
+    sqlite3_bind_int(stmt, 3, studentId);
+
+    int rc = sqlite3_step(stmt);
+
+    if (rc != SQLITE_DONE) {
+        sqlite3_finalize(stmt);
+        logError("updateCourseGradeForStudent step", db);
+        return false;
+    }
+
+    int changes = sqlite3_changes(db);
+    sqlite3_finalize(stmt);
+
+    return changes > 0;
+}

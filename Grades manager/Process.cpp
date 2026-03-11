@@ -345,7 +345,6 @@ void runApp(sqlite3* db)
 
 
 
-
 bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn)
 {
     if (loggedIn.id == 0) {
@@ -353,9 +352,42 @@ bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn)
         return false;
     }
 
+    if (loggedIn.courses.empty()) {
+        std::cout << "You have no courses to grade.\n";
+        return false;
+    }
+
     taskDelimeter();
-    std::cout << "Enter the course ID to grade:\n";
-    int courseId = takeIntInRange(1, 1000000);
+    std::cout << "----- YOUR COURSES -----\n\n";
+
+    for (const Course& c : loggedIn.courses) {
+        std::cout << "Course ID    : " << c.id << "\n";
+        std::cout << "Name         : " << c.name << "\n";
+        std::cout << "Credits      : " << c.credits << "\n";
+        std::cout << "Semester     : " << c.semester << "\n";
+        std::cout << "Final Grade  : " << std::fixed << std::setprecision(2) << c.finalGrade << "\n";
+        taskDelimeter();
+    }
+
+    int courseId = 0;
+    bool found = false;
+
+    while (!found) {
+        std::cout << "Enter the course ID to grade:\n";
+        courseId = takeIntInRange(1, 1000000);
+
+        for (const Course& c : loggedIn.courses) {
+            if (c.id == courseId) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            std::cout << "Invalid course ID. Please choose one of the displayed course IDs.\n";
+            taskDelimeter();
+        }
+    }
 
     taskDelimeter();
     std::cout << "Enter the final grade (0-100):\n";
@@ -366,39 +398,16 @@ bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn)
         grade = takeNumber();
     }
 
-    const char* sql =
-        "UPDATE courses "
-        "SET final_grade = ? "
-        "WHERE id = ? AND student_id = ?;";
+    taskDelimeter();
 
-    sqlite3_stmt* stmt = nullptr;
-
-    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        std::cout << "Database error: could not prepare grade update.\n";
-        return false;
-    }
-
-    sqlite3_bind_double(stmt, 1, grade);
-    sqlite3_bind_int(stmt, 2, courseId);
-    sqlite3_bind_int(stmt, 3, loggedIn.id);
-
-    int rc = sqlite3_step(stmt);
-    sqlite3_finalize(stmt);
-
-    if (rc != SQLITE_DONE) {
-        std::cout << "Database error: could not save the grade.\n";
-        return false;
-    }
-
-    if (sqlite3_changes(db) == 0) {
-        std::cout << "No course was updated. Either the course does not exist or it does not belong to this student.\n";
+    if (!updateCourseGradeForStudent(db, courseId, loggedIn.id, grade)) {
+        std::cout << "Could not update grade due to a database error.\n";
         return false;
     }
 
     std::cout << "Grade updated successfully.\n";
     return true;
 }
-
 
 
 
