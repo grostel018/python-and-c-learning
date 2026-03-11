@@ -16,4 +16,6 @@ void logOut(Student& loggedIn);
 void courseAdder(double& grade, std::string& name, double& weight);
 bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn);
 
+void updateStudentFlow(sqlite3* db, Student& currentUser);
+
 

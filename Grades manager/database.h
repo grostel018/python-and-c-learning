@@ -21,7 +21,7 @@ Student getStudent(sqlite3* db, int id);
 Student getStudentByUsername(sqlite3* db, const std::string& username);
 bool    deleteStudent(sqlite3* db, int id);
 bool    studentExists(sqlite3* db, const std::string& username);
-
+bool updateStudent(sqlite3* db, int id, const std::string& name, const std::string& username, const std::string& password);
 
 
 // Courses

@@ -398,3 +398,105 @@ bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn)
     std::cout << "Grade updated successfully.\n";
     return true;
 }
+
+
+
+
+
+void updateStudentFlow(sqlite3* db, Student& currentUser)
+{
+    if (currentUser.id == 0) {
+        std::cout << "No user is currently logged in.\n";
+        return;
+    }
+
+    while (true) {
+        taskDelimeter();
+        std::cout << "----- UPDATE ACCOUNT -----\n";
+        std::cout << "1. Update name\n";
+        std::cout << "2. Update username\n";
+        std::cout << "3. Update password\n";
+        std::cout << "4. Update all fields\n";
+        std::cout << "5. Back\n";
+
+        int choice = takeIntInRange(1, 5);
+
+        std::string newName = currentUser.name;
+        std::string newUsername = currentUser.username;
+        std::string newPassword = currentUser.password;
+
+        taskDelimeter();
+
+        switch (choice) {
+        case 1:
+            std::cout << "Current name: " << currentUser.name << "\n";
+            std::cout << "Enter new name:\n";
+            newName = takeString();
+
+            if (!updateStudent(db, currentUser.id, newName, newUsername, newPassword)) {
+                std::cout << "Could not update account.\n";
+                return;
+            }
+
+            currentUser.name = newName;
+            std::cout << "Name updated successfully.\n";
+            break;
+
+        case 2:
+            std::cout << "Current username: " << currentUser.username << "\n";
+            std::cout << "Enter new username:\n";
+            newUsername = takeUsername();
+
+            if (!updateStudent(db, currentUser.id, newName, newUsername, newPassword)) {
+                std::cout << "Could not update account. Username may already exist.\n";
+                return;
+            }
+
+            currentUser.username = newUsername;
+            std::cout << "Username updated successfully.\n";
+            break;
+
+        case 3:
+            std::cout << "Enter new password:\n";
+            newPassword = takePassword();
+
+            if (!updateStudent(db, currentUser.id, newName, newUsername, newPassword)) {
+                std::cout << "Could not update account.\n";
+                return;
+            }
+
+            currentUser.password = newPassword;
+            std::cout << "Password updated successfully.\n";
+            break;
+
+        case 4:
+            std::cout << "Current name: " << currentUser.name << "\n";
+            std::cout << "Enter new name:\n";
+            newName = takeString();
+            taskDelimeter();
+
+            std::cout << "Current username: " << currentUser.username << "\n";
+            std::cout << "Enter new username:\n";
+            newUsername = takeUsername();
+            taskDelimeter();
+
+            std::cout << "Enter new password:\n";
+            newPassword = takePassword();
+
+            if (!updateStudent(db, currentUser.id, newName, newUsername, newPassword)) {
+                std::cout << "Could not update account. Username may already exist.\n";
+                return;
+            }
+
+            currentUser.name = newName;
+            currentUser.username = newUsername;
+            currentUser.password = newPassword;
+
+            std::cout << "Account updated successfully.\n";
+            break;
+
+        case 5:
+            return;
+        }
+    }
+}

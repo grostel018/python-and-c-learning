@@ -625,3 +625,38 @@ std::vector<Course> getCoursesByStudentId(sqlite3* db, int studentId)
     sqlite3_finalize(stmt);
     return courses;
 }
+
+
+
+bool updateStudent(sqlite3* db, int id, const std::string& name, const std::string& username, const std::string& password)
+{
+    const char* sql =
+        "UPDATE students "
+        "SET name = ?, username = ?, password = ? "
+        "WHERE id = ?;";
+
+    sqlite3_stmt* stmt = nullptr;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        logError("updateStudent prepare", db);
+        return false;
+    }
+
+    sqlite3_bind_text(stmt, 1, name.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, username.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, password.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt, 4, id);
+
+    int rc = sqlite3_step(stmt);
+
+    if (rc != SQLITE_DONE) {
+        sqlite3_finalize(stmt);
+        logError("updateStudent step", db);
+        return false;
+    }
+
+    int changes = sqlite3_changes(db);
+    sqlite3_finalize(stmt);
+
+    return changes > 0;
+}

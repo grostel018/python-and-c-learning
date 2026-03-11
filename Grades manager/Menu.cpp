@@ -85,8 +85,7 @@ void studentMenu(sqlite3* db, Student& currentUser, bool& running)
 
         case 4:
             
-            computeGPA(currentUser);
-            std::cout << "Current CGPA calculated successfully.\n";
+            updateStudentFlow(db, currentUser);
             break;
 
         case 5:
