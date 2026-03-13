@@ -1,14 +1,36 @@
+/**
+ * Input.cpp
+ *
+ * Utility helpers for validated console input used by the application UI.
+ *
+ * Notes:
+ *  - All functions read from std::cin and perform validation loops until valid input is provided.
+ *  - These helpers perform simple validation and echo input to the console. They are NOT secure:
+ *    do not use `takePassword()` for sensitive passwords in production (input is echoed and stored in memory).
+ */
+
 #include "Input.h"
 #include <iostream>
 #include <cctype>
 #include "UI.h"
 #include <limits>
 
-
-
+/**
+ * @brief Prompt the user for a floating-point number and validate input.
+ *
+ * Repeatedly reads from standard input until a valid floating-point value is entered.
+ * Consumes the remainder of the line after successful extraction to avoid leftover characters
+ * interfering with subsequent reads.
+ *
+ * Behaviour:
+ *  - Prompts with: "Enter numbers : "
+ *  - On success prints: "Input registered successfully"
+ *  - On failure prompts user to enter a valid number and clears the error state.
+ *
+ * @return double The validated numeric value entered by the user.
+ */
 double takeNumber()
 {
-    
     std::cout << "Enter numbers : " ;
     double number{ 0.0 };
     while (true)
@@ -19,25 +41,29 @@ double takeNumber()
 
             std::cout << "Input registered successfully" << std::endl;
 
-            return number;  // No need for static_cast, number is already double
+            return number;  // number is already double
         }
         else
         {
             std::cout << "Enter a valid input (must be a number)" << std::endl;
-            std::cin.clear();           // Clear the error flags
-            std::cin.ignore(10000, '\n'); // Discard invalid input
+            std::cin.clear();                           // Clear the error flags
+            std::cin.ignore(10000, '\n');               // Discard invalid input
         }
-
-
     }
-    
 }
 
-
-
-
-
-
+/**
+ * @brief Prompt the user for a non-empty string containing letters and spaces only.
+ *
+ * Reads a full line and validates that:
+ *  - The line is not empty
+ *  - Every character is either an alphabetic character or a space
+ *
+ * Prompts with: "Letters and spaces only: "
+ * On success prints: "Input registered successfully"
+ *
+ * @return std::string The validated input string.
+ */
 std::string takeString()
 {
     std::string text{ "" };
@@ -65,12 +91,23 @@ std::string takeString()
             std::cout << "Invalid input! Use only letters and spaces.\n";
         }
     }
-
 }
 
-
-
-
+/**
+ * @brief Prompt the user for a password with simple validation rules.
+ *
+ * Validation rules:
+ *  - Minimum length: 6 characters
+ *  - No whitespace characters allowed
+ *
+ * Prompts with: "Password (min 6 chars, no spaces): "
+ * On success prints: "Password registered successfully"
+ *
+ * Warning: This function reads and returns the password as a plain string and input is echoed.
+ * For secure password input use platform-specific secure input (no echo) and avoid storing raw passwords.
+ *
+ * @return std::string The validated password string.
+ */
 std::string takePassword()
 {
     std::string password{ "" };
@@ -106,6 +143,21 @@ std::string takePassword()
     }
 }
 
+/**
+ * @brief Prompt the user for a username and validate against simple constraints.
+ *
+ * Validation rules:
+ *  - Length between 3 and 20 characters (inclusive)
+ *  - Must start with a letter
+ *  - Allowed characters: letters, digits, underscore ('_')
+ *
+ * Prompts with:
+ *  "Username (3-20 chars, letters/digits/_ , must start with letter): "
+ *
+ * On success prints: "Username Entered successfully"
+ *
+ * @return std::string The validated username.
+ */
 std::string takeUsername()
 {
     std::string username{ "" };
@@ -147,8 +199,16 @@ std::string takeUsername()
     }
 }
 
-
-// Small helper (so you don’t depend on unknown takeInt() implementations)
+/**
+ * @brief Read an integer value within an inclusive range [minV, maxV].
+ *
+ * Reads with operator>> and validates range. On successful read the remainder of the
+ * line is consumed. If input is invalid or out of range, the user is prompted again.
+ *
+ * @param minV Minimum allowed value (inclusive)
+ * @param maxV Maximum allowed value (inclusive)
+ * @return int A validated integer in the requested range.
+ */
 int takeIntInRange(int minV, int maxV) {
     int x;
 
@@ -167,8 +227,14 @@ int takeIntInRange(int minV, int maxV) {
     }
 }
 
-//make a better version of this : 
-
+/**
+ * @brief Read a non-empty line from input.
+ *
+ * Uses std::getline and trims leading whitespace by consuming std::ws.
+ * Keeps prompting until the user enters a non-empty line.
+ *
+ * @return std::string A non-empty line entered by the user.
+ */
 std::string takeLineNonEmpty()
 {
     std::string text;

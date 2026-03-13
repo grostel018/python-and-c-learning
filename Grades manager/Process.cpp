@@ -12,7 +12,23 @@
 #include <algorithm>
 
 
-
+/**
+ * @brief Prompt helper to read a single course/component from the user.
+ *
+ * This interactive helper asks for a lecture name, its numeric grade and its weight.
+ * Values are written to the provided references.
+ *
+ * Preconditions:
+ *  - The console is available for input/output.
+ *  - Input validation is handled by `takeString()` / `takeNumber()`.
+ *
+ * Postconditions:
+ *  - `name`, `grade` and `weight` are set to the user-provided values.
+ *
+ * @param[out] grade  The numeric grade for the lecture (modified).
+ * @param[out] name   The lecture name (modified).
+ * @param[out] weight The weight of the lecture/component (modified).
+ */
 void courseAdder(double& grade, std::string& name, double& weight) {
     std::cout << "\nEnter the lecture's name : ";
 
@@ -34,12 +50,18 @@ void courseAdder(double& grade, std::string& name, double& weight) {
 }
 
 
-
-
-
-
-
-
+/**
+ * @brief Attempt to log a user in by username/password.
+ *
+ * Reads username and password from the console and validates them against the database.
+ * On success, `loggedIn` is populated with the student's record and their courses are loaded.
+ *
+ * Security note: password comparison is performed in plain text (as in the original code).
+ *
+ * @param db         SQLite database connection (must be non-null and opened).
+ * @param[out] loggedIn Student struct to populate on successful login.
+ * @return true on successful login; false on failure or database error.
+ */
 bool logIN(sqlite3* db, Student& loggedIn) {
 
     taskDelimeter();
@@ -80,8 +102,21 @@ bool logIN(sqlite3* db, Student& loggedIn) {
 }
 
 
-
-
+/**
+ * @brief Register a new student in the database.
+ *
+ * Interactive flow:
+ *  - Read full name.
+ *  - Prompt repeatedly until a unique username is chosen.
+ *  - Prompt for password twice and confirm match.
+ *  - Insert the student into the database via `insertStudent`.
+ *
+ * On success, `loggedIn` will contain the inserted student's data (courses cleared).
+ *
+ * @param db         SQLite database connection (must be non-null and opened).
+ * @param[out] loggedIn Student struct that will receive the new student's data.
+ * @return true if registration succeeded; false on validation or database errors.
+ */
 bool signUp(sqlite3* db, Student& loggedIn)
 {
     taskDelimeter();
@@ -155,16 +190,21 @@ bool signUp(sqlite3* db, Student& loggedIn)
 }
 
 
-
-
-
-
-
-
-
-
-
-
+/**
+ * @brief Interactive helper to create and persist a `Course` for the logged-in student.
+ *
+ * Flow:
+ *  - Prompts for `name`, `credits` (1-30) and `semester` (1-20).
+ *  - Initializes `finalGrade` to 0.0 and clears components.
+ *  - Calls `insertCourse` to persist the course and returns the saved course with its id.
+ *
+ * Error handling:
+ *  - On database error the returned `Course` will have `id == -1`.
+ *
+ * @param db         SQLite database connection (must be non-null and opened).
+ * @param loggedIn   Reference to the currently logged-in student (used for studentId).
+ * @return The created Course (with `id` set to the inserted row id or -1 on failure).
+ */
 Course addCourse(sqlite3* db, const Student& loggedIn) {
     Course c{};
     c.id = 0;
@@ -205,15 +245,21 @@ Course addCourse(sqlite3* db, const Student& loggedIn) {
 }
 
 
-
-
-
-
-
-
-
-
-
+/**
+ * @brief Interactive flow to delete a course owned by the logged-in student.
+ *
+ * Displays the student's courses and prompts for a course id to delete. Uses `deleteCourse`
+ * which validates ownership and performs the deletion in the database.
+ *
+ * Preconditions:
+ *  - `loggedIn.id` must be non-zero.
+ *
+ * Side effects:
+ *  - Performs database deletion via `deleteCourse`.
+ *
+ * @param db         SQLite database connection.
+ * @param loggedIn   The currently logged-in student (ownership used for deletion).
+ */
 void deleteCourseFlow(sqlite3* db, const Student& loggedIn)
 {
 
@@ -241,15 +287,10 @@ void deleteCourseFlow(sqlite3* db, const Student& loggedIn)
         taskDelimeter();
     }
 
-
-
-
     std::cout << "Enter the ID of the course to delete:\n";
     int id = takeIntInRange(1, 1000000);
 
     taskDelimeter();
-
-
 
     if (!deleteCourse(db, id, loggedIn.id)) {
         std::cout << "Could not delete course. Invalid ID or database error.\n";
@@ -260,15 +301,18 @@ void deleteCourseFlow(sqlite3* db, const Student& loggedIn)
 }
 
 
-
-
-
-
-
-
-
-
-
+/**
+ * @brief Delete the currently logged-in student's account after confirmation.
+ *
+ * Prompts the user to confirm deletion by typing "YES" or "Y" (case-insensitive).
+ * Calls `deleteStudent` to remove the student and their data from the database.
+ *
+ * Side effects:
+ *  - On success resets `loggedIn` to an empty/default Student.
+ *
+ * @param db         SQLite database connection.
+ * @param[in,out] loggedIn The student to delete; will be reset on success.
+ */
 void deleteUser(sqlite3* db, Student& loggedIn)
 {
 
@@ -308,14 +352,13 @@ void deleteUser(sqlite3* db, Student& loggedIn)
 }
 
 
-
-
-
-
-
-
-
-
+/**
+ * @brief Log out the current user by resetting the `Student` struct.
+ *
+ * This is a simple UI flow helper that resets `loggedIn` to its default state.
+ *
+ * @param[in,out] loggedIn The Student to reset.
+ */
 void logOut(Student& loggedIn)
 {
     taskDelimeter();
@@ -328,7 +371,14 @@ void logOut(Student& loggedIn)
 }
 
 
-
+/**
+ * @brief Main application loop.
+ *
+ * Continues running until a menu function sets `running` to false.
+ * Delegates to `mainMenu` when no user is logged in, or `studentMenu` when a user is logged in.
+ *
+ * @param db SQLite database connection.
+ */
 void runApp(sqlite3* db)
 {
     Student currentUser{};
@@ -344,7 +394,17 @@ void runApp(sqlite3* db)
 }
 
 
-
+/**
+ * @brief Interactive flow to set the final grade for one of the student's courses.
+ *
+ * Displays the student's courses, prompts for a course id (validated against the list),
+ * then prompts for a final grade in range [0, 100] and updates the database using
+ * `updateCourseGradeForStudent`.
+ *
+ * @param db         SQLite database connection.
+ * @param loggedIn   The currently logged-in student (used to list and verify course ownership).
+ * @return true on success; false on failure or database error.
+ */
 bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn)
 {
     if (loggedIn.id == 0) {
@@ -410,8 +470,27 @@ bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn)
 }
 
 
-
-
+/**
+ * @brief Interactive flow to update account fields for the logged-in student.
+ *
+ * Presents a small menu:
+ *  1. Update name
+ *  2. Update username
+ *  3. Update password
+ *  4. Update all fields
+ *  5. Back
+ *
+ * For username updates, uniqueness is validated by `updateStudent` (database-side).
+ *
+ * Preconditions:
+ *  - `currentUser.id` must be non-zero.
+ *
+ * Side effects:
+ *  - Calls `updateStudent` which persists changes to the database.
+ *
+ * @param db SQLite database connection.
+ * @param[in,out] currentUser The logged-in student; will be updated in-place on success.
+ */
 void updateStudentFlow(sqlite3* db, Student& currentUser)
 {
     if (currentUser.id == 0) {
