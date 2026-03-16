@@ -1,0 +1,367 @@
+﻿  Calculs.cpp
+  database.cpp
+  Input.cpp
+C:\Users\Rostel\Dropbox\repos\Grades manager\database.cpp(41,10): error C2660: 'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr': function does not take 2 arguments
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\memory(3504,5):
+      see declaration of 'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\memory(3422,5):
+      could be 'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr(std::unique_ptr<_Ux,_Dx> &&) noexcept'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\database.cpp(41,10):
+          'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr(std::unique_ptr<_Ux,_Dx> &&) noexcept': expects 1 arguments - 2 provided
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\memory(3414,5):
+      or       'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr(std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)> &&) noexcept'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\database.cpp(41,10):
+          'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr(std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)> &&) noexcept': expects 1 arguments - 2 provided
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\memory(3411,5):
+      or       'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr(sqlite3 *,void (__cdecl *&&)(sqlite3 *))'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\database.cpp(41,10):
+          'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr(sqlite3 *,void (__cdecl *&&)(sqlite3 *))': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\memory(3410,9):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\memory(3406,5):
+      or       'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr(sqlite3 *,_Dx &&) noexcept'
+          with
+          [
+              _Dx=void (__cdecl *)(sqlite3 *)
+          ]
+          C:\Users\Rostel\Dropbox\repos\Grades manager\database.cpp(41,20):
+          'initializing': cannot convert from 'int (__cdecl *)(sqlite3 *)' to '_Dx &&'
+          with
+          [
+              _Dx=void (__cdecl *)(sqlite3 *)
+          ]
+              C:\Users\Rostel\Dropbox\repos\Grades manager\database.cpp(41,20):
+              Reason: cannot convert from 'int (__cdecl *)(sqlite3 *)' to '_Dx'
+          with
+          [
+              _Dx=void (__cdecl *)(sqlite3 *)
+          ]
+              C:\Users\Rostel\Dropbox\repos\Grades manager\database.cpp(41,20):
+              This conversion requires a reinterpret_cast, a C-style cast or parenthesized function-style cast
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\memory(3402,5):
+      or       'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr(sqlite3 *,const _Dx &) noexcept'
+          with
+          [
+              _Dx=void (__cdecl *)(sqlite3 *)
+          ]
+          C:\Users\Rostel\Dropbox\repos\Grades manager\database.cpp(41,20):
+          'initializing': cannot convert from 'int (__cdecl *)(sqlite3 *)' to 'const _Dx &'
+          with
+          [
+              _Dx=void (__cdecl *)(sqlite3 *)
+          ]
+              C:\Users\Rostel\Dropbox\repos\Grades manager\database.cpp(41,20):
+              Reason: cannot convert from 'int (__cdecl *)(sqlite3 *)' to 'const _Dx'
+          with
+          [
+              _Dx=void (__cdecl *)(sqlite3 *)
+          ]
+              C:\Users\Rostel\Dropbox\repos\Grades manager\database.cpp(41,20):
+              This conversion requires a reinterpret_cast, a C-style cast or parenthesized function-style cast
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\memory(3399,5):
+      or       'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr(sqlite3 *) noexcept'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\database.cpp(41,10):
+          'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr(sqlite3 *) noexcept': expects 1 arguments - 2 provided
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\memory(3389,5):
+      or       'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr(std::nullptr_t) noexcept'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\database.cpp(41,10):
+          'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr(std::nullptr_t) noexcept': expects 1 arguments - 2 provided
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\memory(3386,5):
+      or       'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr(void) noexcept'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\database.cpp(41,10):
+          'std::unique_ptr<sqlite3,void (__cdecl *)(sqlite3 *)>::unique_ptr(void) noexcept': expects 0 arguments - 2 provided
+      C:\Users\Rostel\Dropbox\repos\Grades manager\database.cpp(41,10):
+      while trying to match the argument list '(nullptr, int (__cdecl *)(sqlite3 *))'
+  
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(79,36): warning C4365: 'initializing': conversion from '_Elem' to 'unsigned char', signed/unsigned mismatch
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(79,36): warning C4365:         with
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(79,36): warning C4365:         [
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(79,36): warning C4365:             _Elem=char
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(79,36): warning C4365:         ]
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(128,40): warning C4365: 'initializing': conversion from '_Elem' to 'unsigned char', signed/unsigned mismatch
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(128,40): warning C4365:         with
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(128,40): warning C4365:         [
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(128,40): warning C4365:             _Elem=char
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(128,40): warning C4365:         ]
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(182,40): warning C4365: 'initializing': conversion from '_Elem' to 'unsigned char', signed/unsigned mismatch
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(182,40): warning C4365:         with
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(182,40): warning C4365:         [
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(182,40): warning C4365:             _Elem=char
+C:\Users\Rostel\Dropbox\repos\Grades manager\Input.cpp(182,40): warning C4365:         ]
+  main.cpp
+  Menu.cpp
+C:\Users\Rostel\Dropbox\repos\Grades manager\Menu.cpp(138,63): warning C4100: 'running': unreferenced parameter
+  Process.cpp
+  UI.cpp
+C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(92,24): error C2079: 'oss' uses undefined class 'std::basic_ostringstream<char,std::char_traits<char>,std::allocator<char>>'
+C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9): error C2297: '<<': not valid as right operand has type 'std::ios_base &(__cdecl *)(std::ios_base &)'
+C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,23): error C2677: binary '<<': no global operator found which takes type 'std::_Smanip<std::streamsize>' (or there is no acceptable conversion)
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\cstddef(37,27):
+      could be 'std::byte std::operator <<(const std::byte,const _IntType) noexcept'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::byte std::operator <<(const std::byte,const _IntType) noexcept': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\cstddef(36,39):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_string_view.hpp(2097,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string_view<_Elem,_Traits>)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string_view<_Elem,_Traits>)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\xstring(3532,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\memory(2015,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\memory(3821,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(688,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(732,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(768,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(813,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(851,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(894,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(930,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(936,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(941,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(947,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(955,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char8_t *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char8_t *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(957,34):
+      or       'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,const char8_t *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,const char8_t *)': could not deduce template argument for 'std::basic_ostream<wchar_t,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(961,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char8_t)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char8_t)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(963,34):
+      or       'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,char8_t)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,char8_t)': could not deduce template argument for 'std::basic_ostream<wchar_t,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(969,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,wchar_t)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,wchar_t)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(972,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const wchar_t *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const wchar_t *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(976,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char16_t)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char16_t)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(978,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char32_t)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char32_t)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(981,34):
+      or       'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,char16_t)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,char16_t)': could not deduce template argument for 'std::basic_ostream<wchar_t,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(983,34):
+      or       'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,char32_t)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,char32_t)': could not deduce template argument for 'std::basic_ostream<wchar_t,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(986,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char16_t *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char16_t *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(988,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char32_t *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char32_t *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(991,34):
+      or       'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,const char16_t *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,const char16_t *)': could not deduce template argument for 'std::basic_ostream<wchar_t,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(993,34):
+      or       'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,const char32_t *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,const char32_t *)': could not deduce template argument for 'std::basic_ostream<wchar_t,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(1005,9):
+      or       '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(1004,5):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(1031,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\iomanip(384,43):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(93,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+  
+C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(104,24): error C2079: 'oss' uses undefined class 'std::basic_ostringstream<char,std::char_traits<char>,std::allocator<char>>'
+C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9): error C2297: '<<': not valid as right operand has type 'std::ios_base &(__cdecl *)(std::ios_base &)'
+C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,23): error C2677: binary '<<': no global operator found which takes type 'std::_Smanip<std::streamsize>' (or there is no acceptable conversion)
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\cstddef(37,27):
+      could be 'std::byte std::operator <<(const std::byte,const _IntType) noexcept'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::byte std::operator <<(const std::byte,const _IntType) noexcept': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\cstddef(36,39):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_string_view.hpp(2097,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string_view<_Elem,_Traits>)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string_view<_Elem,_Traits>)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\xstring(3532,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::basic_string<_Elem,_Traits,_Alloc> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\memory(2015,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::shared_ptr<_Ty> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\memory(3821,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::unique_ptr<_Ty2,_Dx2> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(688,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(732,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(768,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(813,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(851,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const _Elem *)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(894,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,_Elem)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(930,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const signed char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(936,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,signed char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(941,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const unsigned char *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(947,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,unsigned char)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(955,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char8_t *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char8_t *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(957,34):
+      or       'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,const char8_t *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,const char8_t *)': could not deduce template argument for 'std::basic_ostream<wchar_t,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(961,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char8_t)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char8_t)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(963,34):
+      or       'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,char8_t)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,char8_t)': could not deduce template argument for 'std::basic_ostream<wchar_t,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(969,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,wchar_t)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,wchar_t)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(972,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const wchar_t *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const wchar_t *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(976,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char16_t)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char16_t)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(978,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char32_t)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,char32_t)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(981,34):
+      or       'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,char16_t)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,char16_t)': could not deduce template argument for 'std::basic_ostream<wchar_t,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(983,34):
+      or       'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,char32_t)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,char32_t)': could not deduce template argument for 'std::basic_ostream<wchar_t,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(986,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char16_t *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char16_t *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(988,31):
+      or       'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char32_t *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<char,_Traits> &std::operator <<(std::basic_ostream<char,_Traits> &,const char32_t *)': could not deduce template argument for 'std::basic_ostream<char,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(991,34):
+      or       'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,const char16_t *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,const char16_t *)': could not deduce template argument for 'std::basic_ostream<wchar_t,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(993,34):
+      or       'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,const char32_t *)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<wchar_t,_Traits> &std::operator <<(std::basic_ostream<wchar_t,_Traits> &,const char32_t *)': could not deduce template argument for 'std::basic_ostream<wchar_t,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(1005,9):
+      or       '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          '_Ostr &&std::operator <<(_Ostr &&,const _Ty &)': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(1004,5):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\__msvc_ostream.hpp(1031,32):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::error_code &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+      C:\Program Files\Microsoft Visual Studio\18\Insiders\VC\Tools\MSVC\14.50.35717\include\iomanip(384,43):
+      or       'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)'
+          C:\Users\Rostel\Dropbox\repos\Grades manager\UI.cpp(105,9):
+          'std::basic_ostream<_Elem,_Traits> &std::operator <<(std::basic_ostream<_Elem,_Traits> &,const std::_Smanip<std::streamsize> &)': could not deduce template argument for 'std::basic_ostream<_Elem,_Traits> &' from '<error>'
+  

@@ -11,6 +11,9 @@
 #include "Calculs.h"
 #include <algorithm>
 
+// Include Constants for using named constants instead of magic numbers
+#include "Models.h"
+
 
 /**
  * @brief Prompt helper to read a single course/component from the user.
@@ -95,8 +98,8 @@ bool logIN(sqlite3* db, Student& loggedIn) {
     }
 
     loggedIn = s;
-    std::cout << "Login successful. Welcome " << loggedIn.name << "!\n";
-    loggedIn.courses = getCoursesByStudentId(db, loggedIn.id);
+    std::cout << "Login successful. Welcome " << loggedIn.getName() << "!\n";
+    loggedIn.courses = getCoursesByStudentId(db, loggedIn.getId());
     computeGPA(loggedIn);
     return true;
 }
@@ -122,7 +125,7 @@ bool signUp(sqlite3* db, Student& loggedIn)
     taskDelimeter();
 
     std::cout << "Enter your Full name\n";
-    loggedIn.name = takeString();
+    loggedIn.setName(takeString());
 
     taskDelimeter();
 
@@ -131,16 +134,16 @@ bool signUp(sqlite3* db, Student& loggedIn)
     while (!valid)
     {
         std::cout << "Enter a username\n";
-        loggedIn.username = takeUsername();
+        loggedIn.setUsername(takeUsername());
 
-        Student check = getStudentByUsername(db, loggedIn.username);
+        Student check = getStudentByUsername(db, loggedIn.getUsername());
 
-        if (check.id == -1) {
+        if (check.getId() == -1) {
             std::cout << "Database error.\n";
             return false;
         }
 
-        if (check.id != 0) {
+        if (check.getId() != 0) {
             std::cout << "Username already taken\n";
             taskDelimeter();
         }
@@ -173,7 +176,7 @@ bool signUp(sqlite3* db, Student& loggedIn)
         }
     }
 
-    loggedIn.password = password1;
+    loggedIn.setPassword(password1);
 
     int newId = insertStudent(db, loggedIn);
     if (newId == -1) {
@@ -182,10 +185,10 @@ bool signUp(sqlite3* db, Student& loggedIn)
     }
 
     loggedIn.courses.clear();
-    loggedIn.gpa = 0.0;
-    loggedIn.cgpa = 0.0;
+    loggedIn.setGPA(0.0);
+    loggedIn.setCGPA(0.0);
 
-    std::cout << "Registered successfully. Welcome " << loggedIn.name << "!\n";
+    std::cout << "Registered successfully. Welcome " << loggedIn.getName() << "!\n";
     return true;
 }
 
@@ -208,19 +211,19 @@ bool signUp(sqlite3* db, Student& loggedIn)
 Course addCourse(sqlite3* db, const Student& loggedIn) {
     Course c{};
     c.id = 0;
-    c.studentId = loggedIn.id;
+    c.studentId = loggedIn.getId();
 
     taskDelimeter();
     std::cout << "Enter course name\n";
     c.name = takeLineNonEmpty();
 
     taskDelimeter();
-    std::cout << "Enter credits (1-30)\n";
-    c.credits = takeIntInRange(1, 30);
+    std::cout << "Enter credits (" << Constants::MIN_CREDITS << "-" << Constants::MAX_CREDITS << ")\n";
+    c.credits = takeIntInRange(Constants::MIN_CREDITS, Constants::MAX_CREDITS);
 
     taskDelimeter();
-    std::cout << "Enter semester (1-20)\n";
-    c.semester = takeIntInRange(1, 20);
+    std::cout << "Enter semester (" << Constants::MIN_SEMESTER << "-" << Constants::MAX_SEMESTER << ")\n";
+    c.semester = takeIntInRange(Constants::MIN_SEMESTER, Constants::MAX_SEMESTER);
 
     c.finalGrade = 0.0;
     c.components.clear();
@@ -263,14 +266,14 @@ Course addCourse(sqlite3* db, const Student& loggedIn) {
 void deleteCourseFlow(sqlite3* db, const Student& loggedIn)
 {
 
-    if (loggedIn.id == 0) {
+    if (loggedIn.getId() == 0) {
         std::cout << "No user is currently logged in.\n";
         return;
     }
 
     taskDelimeter();
 
-    if (loggedIn.courses.empty()) {
+    if (loggedIn.getCourses().empty()) {
         std::cout << "You have no courses to delete.\n";
         return;
     }
@@ -278,21 +281,21 @@ void deleteCourseFlow(sqlite3* db, const Student& loggedIn)
 
     std::cout << "----- COURSES -----\n\n";
 
-    for (const Course& c : loggedIn.courses) {
-        std::cout << "Course ID    : " << c.id << "\n";
-        std::cout << "Name         : " << c.name << "\n";
-        std::cout << "Credits      : " << c.credits << "\n";
-        std::cout << "Semester     : " << c.semester << "\n";
-        std::cout << "Final Grade  : " << std::fixed << std::setprecision(2) << c.finalGrade << "\n";
+    for (const Course& c : loggedIn.getCourses()) {
+        std::cout << "Course ID    : " << c.getId() << "\n";
+        std::cout << "Name         : " << c.getName() << "\n";
+        std::cout << "Credits      : " << c.getCredits() << "\n";
+        std::cout << "Semester     : " << c.getSemester() << "\n";
+        std::cout << "Final Grade  : " << std::fixed << std::setprecision(2) << c.getFinalGrade() << "\n";
         taskDelimeter();
     }
 
     std::cout << "Enter the ID of the course to delete:\n";
-    int id = takeIntInRange(1, 1000000);
+    int id = takeIntInRange(1, Constants::MAX_COURSE_ID_LOOKUP);
 
     taskDelimeter();
 
-    if (!deleteCourse(db, id, loggedIn.id)) {
+    if (!deleteCourse(db, id, loggedIn.getId())) {
         std::cout << "Could not delete course. Invalid ID or database error.\n";
         return;
     }
@@ -316,7 +319,7 @@ void deleteCourseFlow(sqlite3* db, const Student& loggedIn)
 void deleteUser(sqlite3* db, Student& loggedIn)
 {
 
-    if (loggedIn.id == 0) {
+    if (loggedIn.getId() == 0) {
         std::cout << "No user is currently logged in.\n";
         return;
     }
@@ -332,7 +335,8 @@ void deleteUser(sqlite3* db, Student& loggedIn)
     std::getline(std::cin, confirm);
 
 
-    std::transform(confirm.begin(), confirm.end(), confirm.begin(), ::toupper);
+    std::transform(confirm.begin(), confirm.end(), confirm.begin(),
+        [](unsigned char c) { return static_cast<char>(std::toupper(c)); });
 
     if (confirm != "YES" && confirm != "Y") {
         std::cout << "Account deletion cancelled.\n";
@@ -341,7 +345,7 @@ void deleteUser(sqlite3* db, Student& loggedIn)
 
     taskDelimeter();
 
-    if (!deleteStudent(db, loggedIn.id)) {
+    if (!deleteStudent(db, loggedIn.getId())) {
         std::cout << "Database error. Could not delete account.\n";
         return;
     }
@@ -386,7 +390,7 @@ void runApp(sqlite3* db)
 
     while (running)
     {
-        if (currentUser.id == 0)
+        if (currentUser.getId() == 0)
             mainMenu(db, currentUser, running);
         else
             studentMenu(db, currentUser, running);
@@ -407,12 +411,12 @@ void runApp(sqlite3* db)
  */
 bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn)
 {
-    if (loggedIn.id == 0) {
+    if (loggedIn.getId() == 0) {
         std::cout << "No user is currently logged in.\n";
         return false;
     }
 
-    if (loggedIn.courses.empty()) {
+    if (loggedIn.getCourses().empty()) {
         std::cout << "You have no courses to grade.\n";
         return false;
     }
@@ -420,12 +424,12 @@ bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn)
     taskDelimeter();
     std::cout << "----- YOUR COURSES -----\n\n";
 
-    for (const Course& c : loggedIn.courses) {
-        std::cout << "Course ID    : " << c.id << "\n";
-        std::cout << "Name         : " << c.name << "\n";
-        std::cout << "Credits      : " << c.credits << "\n";
-        std::cout << "Semester     : " << c.semester << "\n";
-        std::cout << "Final Grade  : " << std::fixed << std::setprecision(2) << c.finalGrade << "\n";
+    for (const Course& c : loggedIn.getCourses()) {
+        std::cout << "Course ID    : " << c.getId() << "\n";
+        std::cout << "Name         : " << c.getName() << "\n";
+        std::cout << "Credits      : " << c.getCredits() << "\n";
+        std::cout << "Semester     : " << c.getSemester() << "\n";
+        std::cout << "Final Grade  : " << std::fixed << std::setprecision(2) << c.getFinalGrade() << "\n";
         taskDelimeter();
     }
 
@@ -434,10 +438,10 @@ bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn)
 
     while (!found) {
         std::cout << "Enter the course ID to grade:\n";
-        courseId = takeIntInRange(1, 1000000);
+        courseId = takeIntInRange(1, Constants::MAX_COURSE_ID_LOOKUP);
 
-        for (const Course& c : loggedIn.courses) {
-            if (c.id == courseId) {
+        for (const Course& c : loggedIn.getCourses()) {
+            if (c.getId() == courseId) {
                 found = true;
                 break;
             }
@@ -450,17 +454,17 @@ bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn)
     }
 
     taskDelimeter();
-    std::cout << "Enter the final grade (0-100):\n";
+    std::cout << "Enter the final grade (" << Constants::MIN_GRADE << "-" << Constants::MAX_GRADE << "):\n";
     double grade = takeNumber();
 
-    while (grade < 0.0 || grade > 100.0) {
-        std::cout << "Invalid grade. Enter a value between 0 and 100:\n";
+    while (grade < Constants::MIN_GRADE || grade > Constants::MAX_GRADE) {
+        std::cout << "Invalid grade. Enter a value between " << Constants::MIN_GRADE << " and " << Constants::MAX_GRADE << ":\n";
         grade = takeNumber();
     }
 
     taskDelimeter();
 
-    if (!updateCourseGradeForStudent(db, courseId, loggedIn.id, grade)) {
+    if (!updateCourseGradeForStudent(db, courseId, loggedIn.getId(), grade)) {
         std::cout << "Could not update grade due to a database error.\n";
         return false;
     }
@@ -493,7 +497,7 @@ bool setStudentCourseGrade(sqlite3* db, const Student& loggedIn)
  */
 void updateStudentFlow(sqlite3* db, Student& currentUser)
 {
-    if (currentUser.id == 0) {
+    if (currentUser.getId() == 0) {
         std::cout << "No user is currently logged in.\n";
         return;
     }
@@ -509,38 +513,38 @@ void updateStudentFlow(sqlite3* db, Student& currentUser)
 
         int choice = takeIntInRange(1, 5);
 
-        std::string newName = currentUser.name;
-        std::string newUsername = currentUser.username;
-        std::string newPassword = currentUser.password;
+        std::string newName = currentUser.getName();
+        std::string newUsername = currentUser.getUsername();
+        std::string newPassword = currentUser.getPassword();
 
         taskDelimeter();
 
         switch (choice) {
         case 1:
-            std::cout << "Current name: " << currentUser.name << "\n";
+            std::cout << "Current name: " << currentUser.getName() << "\n";
             std::cout << "Enter new name:\n";
             newName = takeString();
 
-            if (!updateStudent(db, currentUser.id, newName, newUsername, newPassword)) {
+            if (!updateStudent(db, currentUser.getId(), newName, newUsername, newPassword)) {
                 std::cout << "Could not update account.\n";
                 return;
             }
 
-            currentUser.name = newName;
+            currentUser.setName(newName);
             std::cout << "Name updated successfully.\n";
             break;
 
         case 2:
-            std::cout << "Current username: " << currentUser.username << "\n";
+            std::cout << "Current username: " << currentUser.getUsername() << "\n";
             std::cout << "Enter new username:\n";
             newUsername = takeUsername();
 
-            if (!updateStudent(db, currentUser.id, newName, newUsername, newPassword)) {
+            if (!updateStudent(db, currentUser.getId(), newName, newUsername, newPassword)) {
                 std::cout << "Could not update account. Username may already exist.\n";
                 return;
             }
 
-            currentUser.username = newUsername;
+            currentUser.setUsername(newUsername);
             std::cout << "Username updated successfully.\n";
             break;
 
@@ -548,22 +552,22 @@ void updateStudentFlow(sqlite3* db, Student& currentUser)
             std::cout << "Enter new password:\n";
             newPassword = takePassword();
 
-            if (!updateStudent(db, currentUser.id, newName, newUsername, newPassword)) {
+            if (!updateStudent(db, currentUser.getId(), newName, newUsername, newPassword)) {
                 std::cout << "Could not update account.\n";
                 return;
             }
 
-            currentUser.password = newPassword;
+            currentUser.setPassword(newPassword);
             std::cout << "Password updated successfully.\n";
             break;
 
         case 4:
-            std::cout << "Current name: " << currentUser.name << "\n";
+            std::cout << "Current name: " << currentUser.getName() << "\n";
             std::cout << "Enter new name:\n";
             newName = takeString();
             taskDelimeter();
 
-            std::cout << "Current username: " << currentUser.username << "\n";
+            std::cout << "Current username: " << currentUser.getUsername() << "\n";
             std::cout << "Enter new username:\n";
             newUsername = takeUsername();
             taskDelimeter();
@@ -571,14 +575,14 @@ void updateStudentFlow(sqlite3* db, Student& currentUser)
             std::cout << "Enter new password:\n";
             newPassword = takePassword();
 
-            if (!updateStudent(db, currentUser.id, newName, newUsername, newPassword)) {
+            if (!updateStudent(db, currentUser.getId(), newName, newUsername, newPassword)) {
                 std::cout << "Could not update account. Username may already exist.\n";
                 return;
             }
 
-            currentUser.name = newName;
-            currentUser.username = newUsername;
-            currentUser.password = newPassword;
+            currentUser.setName(newName);
+            currentUser.setUsername(newUsername);
+            currentUser.setPassword(newPassword);
 
             std::cout << "Account updated successfully.\n";
             break;

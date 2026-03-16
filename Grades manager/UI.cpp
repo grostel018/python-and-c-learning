@@ -23,7 +23,7 @@
  * different UI blocks (menus, profiles, course lists, etc.).
  */
 void taskDelimeter() {
-    std::cout << "\n********************************************************************************************\n";
+    std::cout << "\n" << UIDelimiter::DELIMITER << "\n";
 }
 
 /**
@@ -36,7 +36,7 @@ void welcome()
     taskDelimeter();
     std::cout << "\t*Welcome to the GPA calculator*" << std::endl;
     std::cout << "\t*You can compute your GPA or your CGPA*" << std::endl;
-    
+
 }
 
 /**
@@ -83,57 +83,83 @@ void printMenu() {
 }
 
 /**
+ * @brief Format a grade value for display with 2 decimal places.
+ *
+ * @param grade The grade to format (0-100).
+ * @return std::string Formatted grade string.
+ */
+[[nodiscard]] std::string formatGrade(double grade) {
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(2) << grade;
+    return oss.str();
+}
+
+/**
+ * @brief Format a GPA value for display with 2 decimal places.
+ *
+ * @param gpa The GPA to format (0-4.0).
+ * @return std::string Formatted GPA string.
+ */
+[[nodiscard]] std::string formatGPA(double gpa) {
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(2) << gpa;
+    return oss.str();
+}
+
+
+/**
  * @brief Display a student's profile and courses to the console.
  *
  * Prints identifying information (id, name, username), computed fields
  * (GPA, CGPA), and a formatted list of the student's courses.
  *
  * Behavior:
- * - If `s.id == 0` it is treated as "no user logged in" and the function returns.
+ * - If `s.getId() == 0` it is treated as "no user logged in" and the function returns.
  * - If the student has no courses, a message is shown and the function returns.
  * - The function determines the current semester by scanning the student's courses.
  *
  * @param s The student instance to display. Must expose at least:
- *          - `id` (numeric), `name` (string), `username` (string)
- *          - `gpa`, `cgpa` (floating point)
- *          - `courses` (container of `Course` objects where each course has
- *            `id`, `name`, `credits`, `semester`, and `finalGrade`).
+ *          - `getId()` (numeric), `getName()` (string), `getUsername()` (string)
+ *          - `getGPA()`, `getCGPA()` (floating point)
+ *          - `getCourses()` (container of `Course` objects where each course has
+ *            `getId()`, `getName()`, `getCredits()`, `getSemester()`, and `getFinalGrade()`).
  */
 void displayStudentInfo(const Student& s)
 {
     taskDelimeter();
 
-    if (s.id == 0) {
+    if (s.getId() == 0) {
         std::cout << "No user logged in.\n";
         taskDelimeter();
         return;
     }
 
     int currentSemester = 0;
-    if (!s.courses.empty()) {
-        currentSemester = s.courses[0].semester;
-        for (const Course& c : s.courses) {
-            if (c.semester > currentSemester) {
-                currentSemester = c.semester;
+    const auto& courses = s.getCourses();
+    if (!courses.empty()) {
+        currentSemester = courses[0].getSemester();
+        for (const Course& c : courses) {
+            if (c.getSemester() > currentSemester) {
+                currentSemester = c.getSemester();
             }
         }
     }
 
     std::cout << "----- STUDENT PROFILE -----\n\n";
-    std::cout << "ID        : " << s.id << "\n";
-    std::cout << "Name      : " << s.name << "\n";
-    std::cout << "Username  : " << s.username << "\n";
-    std::cout << "Courses   : " << s.courses.size() << "\n";
+    std::cout << "ID        : " << s.getId() << "\n";
+    std::cout << "Name      : " << s.getName() << "\n";
+    std::cout << "Username  : " << s.getUsername() << "\n";
+    std::cout << "Courses   : " << courses.size() << "\n";
 
     if (currentSemester > 0)
         std::cout << "Semester  : " << currentSemester << "\n";
 
-    std::cout << "GPA       : " << std::fixed << std::setprecision(2) << s.gpa << "\n";
-    std::cout << "CGPA      : " << std::fixed << std::setprecision(2) << s.cgpa << "\n";
+    std::cout << "GPA       : " << formatGPA(s.getGPA()) << "\n";
+    std::cout << "CGPA      : " << formatGPA(s.getCGPA()) << "\n";
 
     taskDelimeter();
 
-    if (s.courses.empty()) {
+    if (courses.empty()) {
         std::cout << "No courses found for this student.\n";
         taskDelimeter();
         return;
@@ -141,14 +167,12 @@ void displayStudentInfo(const Student& s)
 
     std::cout << "----- COURSES -----\n\n";
 
-    for (const Course& c : s.courses) {
-        std::cout << "Course ID    : " << c.id << "\n";
-        std::cout << "Name         : " << c.name << "\n";
-        std::cout << "Credits      : " << c.credits << "\n";
-        std::cout << "Semester     : " << c.semester << "\n";
-        std::cout << "Final Grade  : " << std::fixed << std::setprecision(2) << c.finalGrade << "\n";
+    for (const Course& c : courses) {
+        std::cout << "Course ID    : " << c.getId() << "\n";
+        std::cout << "Name         : " << c.getName() << "\n";
+        std::cout << "Credits      : " << c.getCredits() << "\n";
+        std::cout << "Semester     : " << c.getSemester() << "\n";
+        std::cout << "Final Grade  : " << formatGrade(c.getFinalGrade()) << "\n";
         taskDelimeter();
     }
 }
-
-

@@ -1,8 +1,9 @@
 // ─────────────────────────────────────────
 //  Database.cpp
 // ─────────────────────────────────────────
-#include "Database.h"
+#include "database.h"
 #include <iostream>
+#include <algorithm>
 
 // ── helpers ──────────────────────────────
 
@@ -22,22 +23,43 @@ static void logError(const std::string& context, sqlite3* db) {
     std::cerr << "[DB ERROR] " << context << ": " << sqlite3_errmsg(db) << "\n";
 }
 
+/**
+ * @brief Safely finalize a sqlite3 statement, handling null pointers.
+ *
+ * @param stmt Pointer to the sqlite3_stmt to finalize.
+ */
+static void finalizeStatement(sqlite3_stmt*& stmt) {
+    if (stmt) {
+        sqlite3_finalize(stmt);
+        stmt = nullptr;
+    }
+}
 
+// ── Database RAII class implementation ───────────────────────────────
 
+Database::Database(const std::string& filename)
+    : db_(nullptr, &sqlite3_close) {
+    sqlite3* raw_db = nullptr;
 
+    int rc = sqlite3_open(filename.c_str(), &raw_db);
+    if (rc != SQLITE_OK) {
+        std::string msg = "Cannot open database: ";
+        msg += sqlite3_errmsg(raw_db);
+        if (raw_db) sqlite3_close(raw_db);
+        throw std::runtime_error(msg);
+    }
 
+    // Take ownership with custom deleter
+    db_.reset(raw_db);
 
+    // Enable extended result codes and initialize schema
+    sqlite3_extended_result_codes(raw_db, 1);
+    initDatabase(raw_db);
 
+    std::cout << "Database initialized successfully.\n";
+}
 
-
-
-
-
-
-
-
-
-
+Database::~Database() = default;
 
 // ── setup ────────────────────────────────
 
@@ -100,14 +122,11 @@ void initDatabase(sqlite3* db) {
     }
 }
 
-
-sqlite3* openAndInitDatabase(const std::string& filename)
-{
+sqlite3* openAndInitDatabase(const std::string& filename) {
     sqlite3* db = nullptr;
 
     int rc = sqlite3_open(filename.c_str(), &db);
-    if (rc != SQLITE_OK)
-    {
+    if (rc != SQLITE_OK) {
         std::cerr << "Cannot open database: "
             << sqlite3_errmsg(db) << "\n";
 
@@ -120,14 +139,6 @@ sqlite3* openAndInitDatabase(const std::string& filename)
     std::cout << "Database initialized successfully.\n";
     return db;
 }
-
-
-
-
-
-
-
-
 
 // ── students ─────────────────────────────
 
@@ -143,8 +154,7 @@ sqlite3* openAndInitDatabase(const std::string& filename)
  *                on success.
  * @return The new student's id on success, or -1 on failure.
  */
-int insertStudent(sqlite3* db, Student& student)
-{
+int insertStudent(sqlite3* db, Student& student) {
     if (!db) {
         std::cerr << "[DB ERROR] insertStudent: db is null\n";
         return -1;
@@ -163,31 +173,29 @@ int insertStudent(sqlite3* db, Student& student)
     }
 
     rc = sqlite3_bind_text(stmt, 1, student.name.c_str(), -1, SQLITE_TRANSIENT);
-    if (rc != SQLITE_OK) { logError("insertStudent bind name", db); sqlite3_finalize(stmt); return -1; }
+    if (rc != SQLITE_OK) { logError("insertStudent bind name", db); finalizeStatement(stmt); return -1; }
 
     rc = sqlite3_bind_text(stmt, 2, student.username.c_str(), -1, SQLITE_TRANSIENT);
-    if (rc != SQLITE_OK) { logError("insertStudent bind username", db); sqlite3_finalize(stmt); return -1; }
+    if (rc != SQLITE_OK) { logError("insertStudent bind username", db); finalizeStatement(stmt); return -1; }
 
     rc = sqlite3_bind_text(stmt, 3, student.password.c_str(), -1, SQLITE_TRANSIENT);
-    if (rc != SQLITE_OK) { logError("insertStudent bind password", db); sqlite3_finalize(stmt); return -1; }
+    if (rc != SQLITE_OK) { logError("insertStudent bind password", db); finalizeStatement(stmt); return -1; }
 
     rc = sqlite3_step(stmt);
-    if (rc != SQLITE_DONE)
-    {
+    if (rc != SQLITE_DONE) {
         int extended = sqlite3_extended_errcode(db);
 
         if (extended == SQLITE_CONSTRAINT_UNIQUE || rc == SQLITE_CONSTRAINT) {
             std::cerr << "Username already exists.\n";
-        }
-        else {
+        } else {
             logError("insertStudent step", db);
         }
 
-        sqlite3_finalize(stmt);
+        finalizeStatement(stmt);
         return -1;
     }
 
-    sqlite3_finalize(stmt);
+    finalizeStatement(stmt);
     student.id = static_cast<int>(sqlite3_last_insert_rowid(db));
     return student.id;
 }
@@ -205,29 +213,34 @@ int insertStudent(sqlite3* db, Student& student)
 Student getStudent(sqlite3* db, int id) {
     Student student{};
     const char* sql = "SELECT id, name, username, password FROM students WHERE id = ?;";
-    sqlite3_stmt* stmt;
+    sqlite3_stmt* stmt = nullptr;
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        logError("getStudent prepare", db); return student;
+        logError("getStudent prepare", db);
+        return student;
     }
 
     sqlite3_bind_int(stmt, 1, id);
 
     if (sqlite3_step(stmt) == SQLITE_ROW) {
         student.id = sqlite3_column_int(stmt, 0);
-        student.name = (const char*)sqlite3_column_text(stmt, 1);
-        student.username = (const char*)sqlite3_column_text(stmt, 2);
-        student.password = (const char*)sqlite3_column_text(stmt, 3);
+        // Use static_cast instead of C-style cast for type safety
+        const unsigned char* nameText = sqlite3_column_text(stmt, 1);
+        const unsigned char* userText = sqlite3_column_text(stmt, 2);
+        const unsigned char* passText = sqlite3_column_text(stmt, 3);
+
+        student.name = nameText ? reinterpret_cast<const char*>(nameText) : "";
+        student.username = userText ? reinterpret_cast<const char*>(userText) : "";
+        student.password = passText ? reinterpret_cast<const char*>(passText) : "";
     }
 
-    sqlite3_finalize(stmt);
+    finalizeStatement(stmt);
     return student;
 }
 
 
 // Returns a Student with id==0 if not found (or use std::optional if you want)
-Student getStudentByUsername(sqlite3* db, const std::string& username)
-{
+Student getStudentByUsername(sqlite3* db, const std::string& username) {
     Student student{};
     student.id = 0; // 0 = not found (default)
 
@@ -245,7 +258,7 @@ Student getStudentByUsername(sqlite3* db, const std::string& username)
     }
 
     // Optional: guard against absurdly long inputs (helps avoid weird edge cases)
-    if (username.size() > 64) {
+    if (username.size() > static_cast<std::size_t>(Constants::MAX_USERNAME_SIZE)) {
         std::cerr << "[INPUT ERROR] Username too long\n";
         student.id = -1;
         return student;
@@ -267,10 +280,9 @@ Student getStudentByUsername(sqlite3* db, const std::string& username)
     }
 
     // Make sure stmt always gets finalized (single-exit pattern)
-    auto finalize = [&]() {
-        if (stmt) sqlite3_finalize(stmt);
-        stmt = nullptr;
-        };
+    auto finalize = [&stmt]() {
+        finalizeStatement(stmt);
+    };
 
     rc = sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_TRANSIENT);
     if (rc != SQLITE_OK) {
@@ -292,11 +304,9 @@ Student getStudentByUsername(sqlite3* db, const std::string& username)
         student.name = nameText ? reinterpret_cast<const char*>(nameText) : "";
         student.username = userText ? reinterpret_cast<const char*>(userText) : "";
         student.password = passText ? reinterpret_cast<const char*>(passText) : "";
-    }
-    else if (rc == SQLITE_DONE) {
+    } else if (rc == SQLITE_DONE) {
         // Not found → keep id = 0
-    }
-    else {
+    } else {
         // Any other return means an execution error
         logError("getStudentByUsername step", db);
         student.id = -1;
@@ -305,19 +315,6 @@ Student getStudentByUsername(sqlite3* db, const std::string& username)
     finalize();
     return student;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /**
@@ -331,15 +328,16 @@ Student getStudentByUsername(sqlite3* db, const std::string& username)
  */
 bool deleteStudent(sqlite3* db, int id) {
     const char* sql = "DELETE FROM students WHERE id = ?;";
-    sqlite3_stmt* stmt;
+    sqlite3_stmt* stmt = nullptr;
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        logError("deleteStudent prepare", db); return false;
+        logError("deleteStudent prepare", db);
+        return false;
     }
 
     sqlite3_bind_int(stmt, 1, id);
     bool ok = sqlite3_step(stmt) == SQLITE_DONE;
-    sqlite3_finalize(stmt);
+    finalizeStatement(stmt);
     return ok;
 }
 
@@ -355,10 +353,11 @@ bool deleteStudent(sqlite3* db, int id) {
  */
 bool studentExists(sqlite3* db, const std::string& username) {
     const char* sql = "SELECT COUNT(*) FROM students WHERE username = ?;";
-    sqlite3_stmt* stmt;
+    sqlite3_stmt* stmt = nullptr;
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        logError("studentExists prepare", db); return false;
+        logError("studentExists prepare", db);
+        return false;
     }
 
     sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_TRANSIENT);
@@ -367,7 +366,7 @@ bool studentExists(sqlite3* db, const std::string& username) {
     if (sqlite3_step(stmt) == SQLITE_ROW)
         exists = sqlite3_column_int(stmt, 0) > 0;
 
-    sqlite3_finalize(stmt);
+    finalizeStatement(stmt);
     return exists;
 }
 
@@ -398,21 +397,22 @@ int insertCourse(sqlite3* db, Course& course) {
     }
 
     sqlite3_bind_int(stmt, 1, course.studentId);
-    sqlite3_bind_text(stmt, 2, course.name.c_str(), -1, SQLITE_TRANSIENT); // ✅
+    sqlite3_bind_text(stmt, 2, course.name.c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_int(stmt, 3, course.credits);
     sqlite3_bind_int(stmt, 4, course.semester);
     sqlite3_bind_double(stmt, 5, course.finalGrade);
 
     if (sqlite3_step(stmt) != SQLITE_DONE) {
         logError("insertCourse step", db);
-        sqlite3_finalize(stmt);
+        finalizeStatement(stmt);
         return -1;
     }
 
     course.id = static_cast<int>(sqlite3_last_insert_rowid(db));
-    sqlite3_finalize(stmt);
-    return course.id; // >0 on success, -1 on error
+    finalizeStatement(stmt);
+    return course.id;
 }
+
 /**
  * @brief Get all courses for a student in a given semester.
  *
@@ -429,10 +429,11 @@ std::vector<Course> getCoursesForStudent(sqlite3* db, int studentId, int semeste
     const char* sql =
         "SELECT id, student_id, name, credits, semester, final_grade"
         " FROM courses WHERE student_id = ? AND semester = ?;";
-    sqlite3_stmt* stmt;
+    sqlite3_stmt* stmt = nullptr;
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        logError("getCoursesForStudent prepare", db); return courses;
+        logError("getCoursesForStudent prepare", db);
+        return courses;
     }
 
     sqlite3_bind_int(stmt, 1, studentId);
@@ -442,14 +443,16 @@ std::vector<Course> getCoursesForStudent(sqlite3* db, int studentId, int semeste
         Course c{};
         c.id = sqlite3_column_int(stmt, 0);
         c.studentId = sqlite3_column_int(stmt, 1);
-        c.name = (const char*)sqlite3_column_text(stmt, 2);
+        // Use static_cast for text conversion
+        const unsigned char* text = sqlite3_column_text(stmt, 2);
+        c.name = text ? reinterpret_cast<const char*>(text) : "";
         c.credits = sqlite3_column_int(stmt, 3);
         c.semester = sqlite3_column_int(stmt, 4);
         c.finalGrade = sqlite3_column_double(stmt, 5);
         courses.push_back(c);
     }
 
-    sqlite3_finalize(stmt);
+    finalizeStatement(stmt);
     return courses;
 }
 
@@ -462,8 +465,7 @@ std::vector<Course> getCoursesForStudent(sqlite3* db, int studentId, int semeste
  * @param id The id of the course to delete.
  * @return true if deletion succeeded, false otherwise.
  */
-bool deleteCourse(sqlite3* db, int courseId, int studentId)
-{
+bool deleteCourse(sqlite3* db, int courseId, int studentId) {
     const char* sql = "DELETE FROM courses WHERE id = ? AND student_id = ?;";
     sqlite3_stmt* stmt = nullptr;
 
@@ -479,10 +481,11 @@ bool deleteCourse(sqlite3* db, int courseId, int studentId)
 
     int changes = sqlite3_changes(db);
 
-    sqlite3_finalize(stmt);
+    finalizeStatement(stmt);
 
     return ok && changes > 0;
 }
+
 /**
  * @brief Update the stored final grade for a course.
  *
@@ -496,16 +499,17 @@ bool deleteCourse(sqlite3* db, int courseId, int studentId)
  */
 bool updateCourseGrade(sqlite3* db, int courseId, double finalGrade) {
     const char* sql = "UPDATE courses SET final_grade = ? WHERE id = ?;";
-    sqlite3_stmt* stmt;
+    sqlite3_stmt* stmt = nullptr;
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        logError("updateCourseGrade prepare", db); return false;
+        logError("updateCourseGrade prepare", db);
+        return false;
     }
 
     sqlite3_bind_double(stmt, 1, finalGrade);
     sqlite3_bind_int(stmt, 2, courseId);
     bool ok = sqlite3_step(stmt) == SQLITE_DONE;
-    sqlite3_finalize(stmt);
+    finalizeStatement(stmt);
     return ok;
 }
 
@@ -527,10 +531,11 @@ int insertGradeComponent(sqlite3* db, GradeComponent& component) {
     const char* sql =
         "INSERT INTO grade_components (course_id, label, grade, weight)"
         " VALUES (?, ?, ?, ?);";
-    sqlite3_stmt* stmt;
+    sqlite3_stmt* stmt = nullptr;
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        logError("insertGradeComponent prepare", db); return -1;
+        logError("insertGradeComponent prepare", db);
+        return -1;
     }
 
     sqlite3_bind_int(stmt, 1, component.courseId);
@@ -540,11 +545,12 @@ int insertGradeComponent(sqlite3* db, GradeComponent& component) {
 
     if (sqlite3_step(stmt) != SQLITE_DONE) {
         logError("insertGradeComponent step", db);
-        sqlite3_finalize(stmt); return -1;
+        finalizeStatement(stmt);
+        return -1;
     }
 
-    component.id = (int)sqlite3_last_insert_rowid(db);
-    sqlite3_finalize(stmt);
+    component.id = static_cast<int>(sqlite3_last_insert_rowid(db));
+    finalizeStatement(stmt);
     return component.id;
 }
 
@@ -563,10 +569,11 @@ std::vector<GradeComponent> getComponentsForCourse(sqlite3* db, int courseId) {
     const char* sql =
         "SELECT id, course_id, label, grade, weight"
         " FROM grade_components WHERE course_id = ?;";
-    sqlite3_stmt* stmt;
+    sqlite3_stmt* stmt = nullptr;
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-        logError("getComponentsForCourse prepare", db); return components;
+        logError("getComponentsForCourse prepare", db);
+        return components;
     }
 
     sqlite3_bind_int(stmt, 1, courseId);
@@ -575,20 +582,20 @@ std::vector<GradeComponent> getComponentsForCourse(sqlite3* db, int courseId) {
         GradeComponent gc{};
         gc.id = sqlite3_column_int(stmt, 0);
         gc.courseId = sqlite3_column_int(stmt, 1);
-        gc.label = (const char*)sqlite3_column_text(stmt, 2);
+        // Use static_cast for text conversion
+        const unsigned char* labelText = sqlite3_column_text(stmt, 2);
+        gc.label = labelText ? reinterpret_cast<const char*>(labelText) : "";
         gc.grade = sqlite3_column_double(stmt, 3);
         gc.weight = sqlite3_column_double(stmt, 4);
         components.push_back(gc);
     }
 
-    sqlite3_finalize(stmt);
+    finalizeStatement(stmt);
     return components;
 }
 
 
-
-std::vector<Course> getCoursesByStudentId(sqlite3* db, int studentId)
-{
+std::vector<Course> getCoursesByStudentId(sqlite3* db, int studentId) {
     std::vector<Course> courses;
 
     const char* sql =
@@ -622,14 +629,12 @@ std::vector<Course> getCoursesByStudentId(sqlite3* db, int studentId)
         courses.push_back(c);
     }
 
-    sqlite3_finalize(stmt);
+    finalizeStatement(stmt);
     return courses;
 }
 
 
-
-bool updateStudent(sqlite3* db, int id, const std::string& name, const std::string& username, const std::string& password)
-{
+bool updateStudent(sqlite3* db, int id, const std::string& name, const std::string& username, const std::string& password) {
     const char* sql =
         "UPDATE students "
         "SET name = ?, username = ?, password = ? "
@@ -650,22 +655,19 @@ bool updateStudent(sqlite3* db, int id, const std::string& name, const std::stri
     int rc = sqlite3_step(stmt);
 
     if (rc != SQLITE_DONE) {
-        sqlite3_finalize(stmt);
+        finalizeStatement(stmt);
         logError("updateStudent step", db);
         return false;
     }
 
     int changes = sqlite3_changes(db);
-    sqlite3_finalize(stmt);
+    finalizeStatement(stmt);
 
     return changes > 0;
 }
 
 
-
-
-bool updateCourseGradeForStudent(sqlite3* db, int courseId, int studentId, double grade)
-{
+bool updateCourseGradeForStudent(sqlite3* db, int courseId, int studentId, double grade) {
     const char* sql =
         "UPDATE courses "
         "SET final_grade = ? "
@@ -685,13 +687,13 @@ bool updateCourseGradeForStudent(sqlite3* db, int courseId, int studentId, doubl
     int rc = sqlite3_step(stmt);
 
     if (rc != SQLITE_DONE) {
-        sqlite3_finalize(stmt);
+        finalizeStatement(stmt);
         logError("updateCourseGradeForStudent step", db);
         return false;
     }
 
     int changes = sqlite3_changes(db);
-    sqlite3_finalize(stmt);
+    finalizeStatement(stmt);
 
     return changes > 0;
 }
