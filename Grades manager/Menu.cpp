@@ -111,10 +111,10 @@
      *  - running     : reference to application run flag (not directly modified here except via flows).
      *
      * Preconditions:
-     *  - `currentUser.id` must be non-zero. If it is zero, the function prints a message and returns.
+     *  - `currentUser.getId()` must be non-zero. If it is zero, the function prints a message and returns.
      *
      * Behavior:
-     *  - Refreshes `currentUser.courses` each loop using `getCoursesByStudentId`.
+     *  - Refreshes `currentUser.getCourses()` each loop using `getCoursesByStudentId`.
      *  - Displays menu choices via `printMenuCommands`.
      *  - Reads an integer choice in the inclusive range [1,8] using `takeIntInRange`.
      *  - Choice mapping:
@@ -124,7 +124,7 @@
      *      4 -> `updateStudentFlow(db, currentUser)`    : update student profile/metadata
      *      5 -> `deleteCourseFlow(db, currentUser)`     : delete a course from the student's list
      *      6 -> `deleteUser(db, currentUser)`           : delete the student account; if deletion
-     *                                                     clears `currentUser.id`, the menu returns
+     *                                                     clears `currentUser.getId()`, the menu returns
      *      7 -> recompute GPA and `displayStudentInfo(currentUser)` : show current student info
      *      8 -> `logOut(currentUser)` and return        : logs the user out of the session
      *
@@ -132,20 +132,20 @@
      *  - Several flows call into the DB and may change persistent state.
      *  - `computeGPA` updates fields in `currentUser` (assumed) and is called before displaying info
      *    to ensure the most recent GPA is shown.
-     *  - When `deleteUser` clears `currentUser.id`, this function exits to allow the caller to
+     *  - When `deleteUser` clears `currentUser.getId()`, this function exits to allow the caller to
      *    handle the logged-out / deleted state.
      */
     void studentMenu(sqlite3* db, Student& currentUser, bool& running)
     {
 
-        if (currentUser.id == 0) {
+        if (currentUser.getId() == 0) {
             std::cout << "No user is currently logged in.\n";
             return;
         }
 
         while (true)
         {
-            currentUser.courses = getCoursesByStudentId(db, currentUser.id);
+            currentUser.courses = getCoursesByStudentId(db, currentUser.getId());
 
             std::cout << "Choose your task and press Enter\n";
             printMenuCommands();
@@ -162,13 +162,13 @@
                 break;
 
             case 3:
-            
+
                 computeGPA(currentUser);
                 std::cout << "Current GPA calculated successfully.\n";
                 break;
 
             case 4:
-            
+
                 updateStudentFlow(db, currentUser);
                 break;
 
@@ -178,11 +178,11 @@
 
             case 6:
                 deleteUser(db, currentUser);
-                if (currentUser.id == 0) return;
+                if (currentUser.getId() == 0) return;
                 break;
 
             case 7:
-            
+
                 computeGPA(currentUser);
                 displayStudentInfo(currentUser);
                 break;
