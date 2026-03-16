@@ -336,9 +336,19 @@ bool deleteStudent(sqlite3* db, int id) {
     }
 
     sqlite3_bind_int(stmt, 1, id);
-    bool ok = sqlite3_step(stmt) == SQLITE_DONE;
+    
+    int rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE) {
+        logError("deleteStudent step", db);
+        finalizeStatement(stmt);
+        return false;
+    }
+
+    int changes = sqlite3_changes(db);
     finalizeStatement(stmt);
-    return ok;
+    
+    // Return true only if a row was actually deleted
+    return changes > 0;
 }
 
 /**

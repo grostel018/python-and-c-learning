@@ -74,9 +74,8 @@ public:
     explicit operator bool() const { return db_ != nullptr; }
 
 private:
-    std::unique_ptr<sqlite3, void(*)(sqlite3*)> db_;
+    std::unique_ptr<sqlite3, int(*)(sqlite3*)> db_;
 };
-
 // ── Database Functions ───────────────────
 // Old-style functions for backward compatibility
 

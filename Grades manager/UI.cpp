@@ -15,6 +15,7 @@
 #include <vector>
 #include <string>
 #include <iomanip>
+#include <sstream> // <--- add this
 
 /**
  * @brief Print a horizontal delimiter used to separate UI sections.

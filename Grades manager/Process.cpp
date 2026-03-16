@@ -318,7 +318,6 @@ void deleteCourseFlow(sqlite3* db, const Student& loggedIn)
  */
 void deleteUser(sqlite3* db, Student& loggedIn)
 {
-
     if (loggedIn.getId() == 0) {
         std::cout << "No user is currently logged in.\n";
         return;
@@ -328,12 +327,10 @@ void deleteUser(sqlite3* db, Student& loggedIn)
 
     std::cout << "Are you sure you want to delete your account?\n";
     std::cout << "This will permanently delete all your data.\n";
-    std::cout << "Type \"YES\"or \"Y\" to confirm: ";
+    std::cout << "Type \"YES\" or \"Y\" to confirm: " << std::flush;
 
     std::string confirm;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::getline(std::cin, confirm);
-
 
     std::transform(confirm.begin(), confirm.end(), confirm.begin(),
         [](unsigned char c) { return static_cast<char>(std::toupper(c)); });
@@ -345,6 +342,15 @@ void deleteUser(sqlite3* db, Student& loggedIn)
 
     taskDelimeter();
 
+    // Delete all courses first to satisfy foreign key constraints
+    for (const auto& course : loggedIn.getCourses()) {
+        if (!deleteCourse(db, course.getId(), loggedIn.getId())) {
+            std::cout << "Database error. Could not delete all courses. Deletion cancelled.\n";
+            return;
+        }
+    }
+
+    // Now delete the student (only if all courses were deleted successfully)
     if (!deleteStudent(db, loggedIn.getId())) {
         std::cout << "Database error. Could not delete account.\n";
         return;
@@ -352,7 +358,7 @@ void deleteUser(sqlite3* db, Student& loggedIn)
 
     std::cout << "Account deleted successfully.\n";
 
-    loggedIn = {};  // reset logged user
+    loggedIn = {};
 }
 
 
