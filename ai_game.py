@@ -7,6 +7,11 @@ CHOICES = {
     3: "rock"
 }
 
+
+
+
+
+
 # Game rules matrix - more maintainable than multiple if/elif statements
 RULES = {
     (1, 2): "scissors cut paper, you lost!",
