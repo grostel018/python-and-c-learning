@@ -1,0 +1,1 @@
+#dont give me the code, i just wanna learn how to : Automate robots.txt Disallow follow-ups  Automate harvesting of Disallow entries with a quick parse and queue them for follow-up requests. It reduces missed paths and sets up a clean seed list for later automated discovery steps.
